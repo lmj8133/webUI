@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+
+  <head>
+    <!--meta-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+
+    <!--title-->
+    <title>Delta Printer Bed Leveling</title>
+
+    <!--css-->
+    <link href="css/main.css?v0000"        rel="stylesheet" />
+    <link href="css/bt4/bootstrap.min.css" rel="stylesheet" />
+
+    <!--js-->
+    <script src="js/bt4/jquery-3.3.1.min.js"></script>
+    <script src="js/bt4//bootstrap.min.js"  ></script>
+    <script src="js/Web_UI_script.js?v0000" ></script>
+    <script src="js/Web_3D_Printer_controller.js?v0000"></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Bed Leveling</h1>
+    </header>
+    <br>
+    <main>
+      <section id ="bed_leveling_ui_section">
+        <h1>手動調整格點Z值</h1>
+        <div id="mesh"></div>
+
+        <br>
+        <input id = "read_mesh_from_pc_btn"     type="button" class="btn btn-info"      value="從PC讀取網格值" />
+        <input id = "read_mesh_from_marlin_btn" type="button" class="btn btn-info"      value="從列印機讀取網格值" />
+        <input id = "clear_mesh_btn"            type="button" class="btn btn-info"      value="清除網格值" />
+        <hr>
+        <input id = "auto_home_btn"             type="button" class="btn btn-primary"   value="Auto Home" />
+        <input id = "bedleveling_btn"           type="button" class="btn btn-secondary" value="BedLeveling" />
+        <hr>
+        <input id = "save_mesh_to_marlin_btn"   type="button" class="btn btn-danger"    value="儲存網格值到列印機" />
+        <input id = "save_mesh_to_pc_btn"       type="button" class="btn btn-danger"    value="儲存網格值到PC" />
+        
+      </section>
+    </main>
+  </body>
+</html>
