@@ -79,7 +79,7 @@ $(function(){
 
     //Auto Home
     $("#auto_home_btn").on('click',function(){
-        ws.send('auto_home\n');
+        ws.send('test\n');
     });
 
     //BedLeveling
