@@ -7,9 +7,9 @@ $(function(){
        |_|\__,_|_.__/|_|\___|   \____|\___|_| |_|\___|_|  \__,_|\__\___/|_|   
     
     ==========================================================================*/  
-    $.getJSON('http://0.0.0.0:8080/js/ui.json', function(data) {
+    $.getJSON('http://192.168.3.138/js/ui.json', function(data) {
     //do stuff with your data here
-        console.log("data")
+        console.log(data.id);
 });
 });
 

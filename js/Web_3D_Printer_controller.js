@@ -12,7 +12,7 @@ $(function(){
          ====================================================================*/
         console.log("您的瀏覽器支援 WebSocket!");
         //var ws = new WebSocket("ws://49.158.75.36:9002");
-        var ws = new WebSocket("ws://localhost:9002");
+        var ws = new WebSocket("ws://192.168.3.138:9002");
         ws.onopen = function(){
             console.log("websocket 已連線上");
         }
