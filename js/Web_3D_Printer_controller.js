@@ -12,7 +12,8 @@ $(function(){
          ====================================================================*/
         console.log("您的瀏覽器支援 WebSocket!");
         //var ws = new WebSocket("ws://49.158.75.36:9002");
-        var ws = new WebSocket("ws://192.168.3.138:9002");
+        //var ws = new WebSocket("ws://192.168.3.193:9002");
+        var ws = new WebSocket("ws://localhost:9002");
         ws.onopen = function(){
             console.log("websocket 已連線上");
         }
@@ -61,48 +62,92 @@ $(function(){
                                                   
     ===================================================*/
     //註冊button callback func
-    //從PC讀取網格值
-    $("#read_mesh_from_pc_btn").on('click',function(){
-        ws.send('read_mesh_from_pc\n');
-    });
-
-    //從列印機讀取網格值
-    $("#read_mesh_from_marlin_btn").on('click',function(){
-        ws.send('read_mesh_from_marlin\n');
-    });
-
-    //網格值歸0
-    $("#clear_mesh_btn").on('click',function(){
-        reset_grid_value();
-        ws.send('clear_mesh\n');
-    });
 
     //Auto Home
     $("#auto_home_btn").on('click',function(){
         ws.send('test\n');
     });
 
-    //BedLeveling
-    $("#bedleveling_btn").on('click',function(){
-        ws.send('bedleveling\n');
+    $("#open_file").change(function(){
+        ws.send('open\n');
+    });
+    
+    $("#create_cb").on('click',function(){
+        console.log("create cb");
+        ws.send('create_cb\n');
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = 'car';
+        checkbox.name = 'interest';
+        checkbox.value = 'car';
+     
+        var label = document.createElement('label')
+        label.htmlFor = 'car';
+        label.appendChild(document.createTextNode('Car'));
+     
+        var br = document.createElement('br');
+     
+        var container = document.getElementById('container');
+        container.appendChild(checkbox);
+        container.appendChild(label);
+        container.appendChild(br);
     });
 
-    //save網格值到marlin
-    $("#save_mesh_to_marlin_btn").on('click',function(){
-        //製作grid value string
-        tx_str = 'save_mesh_to_marlin,';
-        var td_ary = $("#grid_tbl").find($("input"));
-        for(var i = 0; i<row_num*column_num; i++){
-            tx_str += $(td_ary[i]).val();
-            if(i < row_num*column_num - 1) tx_str += ','; 
-            else                           tx_str += '\n'; 
-        }
-        //傳送string到websocket server
-        ws.send(tx_str);
+    $("#create_cb_batch").on('click',function(){
+        ws.send('create_cb\n');
+        $.getJSON('http://localhost/js/ui.json', function(data) {
+            //do stuff with your data here
+            var jsonLength = Object.keys(data.item).length;
+            var container = document.getElementById('container');
+            while(container.childNodes.length) {
+                container.childNodes[0].remove();
+            }
+            console.log(jsonLength);
+            for(var i = 0; i < jsonLength; i++) {
+                var checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = data.item[i];
+                checkbox.name = 'interest';
+                checkbox.value = data.item[i];
+             
+                var label = document.createElement('label')
+                label.htmlFor = data.item[i];
+                label.appendChild(document.createTextNode(data.item[i]));
+             
+                var br = document.createElement('br');
+             
+                //var container = document.getElementById('container');
+                container.appendChild(checkbox);
+                container.appendChild(label);
+                container.appendChild(br);
+            }
+        });
     });
 
-    //save網格值到PC
-    $("#save_mesh_to_pc_btn").on('click',function(){
-        ws.send('save_mesh_to_pc\n');
+    $("#clear_cb").on('click',function(){
+        var container = document.getElementById('container');
+        //console.log(container.childElementCount);
+        deleteCheckbox(container);
+        //while(container.childNodes.length) {
+        //    container.childNodes[0].remove();
+        //}
+    });
+
+    $("#save").on('click', function(){
+        ws.send('save\n');
+        ws.send(dropdownListSelected('#define BOARD_NO'));
+        //var dropdownList = document.getElementById("#define BOARD_NO");
+        //var index = dropdownList.selectedIndex;
+        //console.log(dropdownList.options[index].text);
+        //ws.send(dropdownList.options[index].text + '\n');
+        ws.send('end\n');
     });
 });
+
+function dropdownListSelected(id)
+{
+    var dropdownList = document.getElementById(id);
+    var index = dropdownList.selectedIndex;
+    console.log(dropdownList.options[index].text);
+    return dropdownList.options[index].text + '\n';
+}

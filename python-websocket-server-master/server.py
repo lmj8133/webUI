@@ -2,6 +2,8 @@ from websocket_server import WebsocketServer
 
 import threading
 import time
+import os
+import re
 
 row_num = 11;
 column_num = 11;
@@ -27,6 +29,7 @@ def client_left(client, server):
 def message_received(client, server, message):
     global t
     global mesh_ram
+    global indata
     #===============================================================================================================================
     #   ___       _       _             _    _____                           _          __  ____                                __  
     #  / _ \ _ __(_) __ _(_)_ __   __ _| |  | ____|_  ____ _ _ __ ___  _ __ | | ___    / / |  _ \ ___  ___  ___ _ ____   _____  \ \ 
@@ -73,6 +76,37 @@ def message_received(client, server, message):
     if cmd == 'test': 
         print(message)
 
+    elif cmd == 'create_cb': 
+        print(message)
+        #f = open("/mnt/hgfs/vm_share/codingstyle/Inc/config.h", "r")
+        f = open(os.getcwd() + "/config.h", "r")
+        print(f.read())
+        print(os.getcwd())
+
+    elif cmd == 'save':
+        print(message)
+        indata = 1
+        print("dataSts: ", indata)
+    elif cmd == 'end':
+        print(message)
+        indata = 0
+        print("dataSts: ", indata)
+    else:
+        print(message)
+        print("dataSts: ", indata)
+        if(re.search('BOARD', message) != 'None'):
+            with open(os.getcwd() + "/config.h", 'r') as fr:
+                lines = fr.readlines()
+         
+                with open(os.getcwd() + "/config.h", 'w') as fw:
+                    for line in lines:
+                       
+                        # find() returns -1
+                        # if no match found
+                        if line.find('#define BOARD_NO') == -1:
+                            fw.write(line)
+                        else:
+                            fw.write(line.replace(line.split()[2], message))
 #======================================================================
 #  ____        _   _____ _                        _    ___       _ _   
 # / ___| _   _| |_|_   _| |__  _ __ ___  __ _  __| |  |_ _|_ __ (_) |_ 

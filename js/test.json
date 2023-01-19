@@ -1,0 +1,13 @@
+{
+    "type":"board_no",
+    "content":[
+        {
+        "value":"BOARD4",
+        "attr":"9421"
+        },
+        {
+        "value":"BOARD5",
+        "attr":"9410"
+        }
+    ]
+}

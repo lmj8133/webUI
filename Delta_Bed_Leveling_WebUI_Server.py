@@ -11,7 +11,8 @@ if sys.argv[1:]:
   port = int(sys.argv[1])
 else:
   port = 80
-server_address = ('192.168.3.138', port)
+#server_address = ('192.168.3.193', port)
+server_address = ('0.0.0.0', port)
 
 httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPRequestHandler)
 
