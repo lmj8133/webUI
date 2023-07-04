@@ -4,22 +4,12 @@ import threading
 import time
 import os
 import re
-
-row_num = 11;
-column_num = 11;
-
-#creat a ram buf for mesh 
-mesh_ram = []  
-for i in range(row_num*column_num):
-    mesh_ram.append('0.000')
-
-
+import json
 
 # Called for every client connecting (after handshake)
 def new_client(client, server):
     print("New client connected and was given id %d" % client['id'])
     server.send_message_to_all("Hey all, a new client has joined us")
-
 
 # Called for every client disconnecting
 def client_left(client, server):
@@ -27,9 +17,7 @@ def client_left(client, server):
 
 # Called when a client sends a message
 def message_received(client, server, message):
-    global t
-    global mesh_ram
-    global indata
+    rx_data = 0
     #===============================================================================================================================
     #   ___       _       _             _    _____                           _          __  ____                                __  
     #  / _ \ _ __(_) __ _(_)_ __   __ _| |  | ____|_  ____ _ _ __ ___  _ __ | | ___    / / |  _ \ ___  ___  ___ _ ____   _____  \ \ 
@@ -53,70 +41,12 @@ def message_received(client, server, message):
     #                                                                                                        
     #==============================================================================================================
     #print(message)
-    message = message.strip('\n')
-    data_buf = message.split(',')
-    
-
-    if len(data_buf) == 1:
-        cmd = data_buf[0]
-        data = None
-    else:    
-        #data_buf的len>1代表才有資料
-        cmd = data_buf[0]
-        data = data_buf[1:]
-
-    #=============================================================
-    #  ____       _      _____        __  __            _ _       
-    # / ___|  ___| |_   |_   _|__    |  \/  | __ _ _ __| (_)_ __  
-    # \___ \ / _ \ __|    | |/ _ \   | |\/| |/ _` | '__| | | '_ \ 
-    #  ___) |  __/ |_     | | (_) |  | |  | | (_| | |  | | | | | |
-    # |____/ \___|\__|    |_|\___/   |_|  |_|\__,_|_|  |_|_|_| |_|
-    #
-    #=============================================================
-    if cmd == 'test': 
-        print(message)
-
-    elif cmd == 'create_cb': 
-        print(message)
-        #f = open("/mnt/hgfs/vm_share/codingstyle/Inc/config.h", "r")
-        f = open(os.getcwd() + "/config.h", "r")
-        print(f.read())
-        print(os.getcwd())
-
-    elif cmd == 'save':
-        print(message)
-        indata = 1
-        print("dataSts: ", indata)
-    elif cmd == 'end':
-        print(message)
-        indata = 0
-        print("dataSts: ", indata)
-    else:
-        print(message)
-        print("dataSts: ", indata)
-        if(re.search('BOARD', message) != 'None'):
-            with open(os.getcwd() + "/config.h", 'r') as fr:
-                lines = fr.readlines()
-         
-                with open(os.getcwd() + "/config.h", 'w') as fw:
-                    for line in lines:
-                       
-                        # find() returns -1
-                        # if no match found
-                        if line.find('#define BOARD_NO') == -1:
-                            fw.write(line)
-                        else:
-                            fw.write(line.replace(line.split()[2], message))
-#======================================================================
-#  ____        _   _____ _                        _    ___       _ _   
-# / ___| _   _| |_|_   _| |__  _ __ ___  __ _  __| |  |_ _|_ __ (_) |_ 
-# \___ \| | | | '_ \| | | '_ \| '__/ _ \/ _` |/ _` |   | || '_ \| | __|
-#  ___) | |_| | |_) | | | | | | | |  __/ (_| | (_| |   | || | | | | |_ 
-# |____/ \__,_|_.__/|_| |_| |_|_|  \___|\__,_|\__,_|  |___|_| |_|_|\__|
-#
-#======================================================================                                                                    
-
-
+    rx_data = message.strip('\n')
+    rx_data = json.loads(rx_data)
+    print(rx_data)
+    if rx_data["cmd"] == 'comfrim': 
+        print(rx_data["data"])
+ 
 #========================================================================================================
 # __        __   _    ____             _        _      ____                              ___       _ _   
 # \ \      / /__| |__/ ___|  ___   ___| | _____| |_   / ___|  ___ _ ____   _____ _ __   |_ _|_ __ (_) |_ 
