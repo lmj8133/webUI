@@ -1,6 +1,6 @@
-$(function(){
+$(function () {
     // 判斷瀏覽器支不支援 WebSocket
-    if ("WebSocket" in window){
+    if ("WebSocket" in window) {
 
         /*====================================================================
         __        __   _    ____             _        _       ____ _ _            _      ___       _ _   
@@ -14,14 +14,14 @@ $(function(){
         //var ws = new WebSocket("ws://49.158.75.36:9002");
         //var ws = new WebSocket("ws://192.168.3.193:9002");
         var ws = new WebSocket("ws://localhost:9002");
-        ws.onopen = function(){
+        ws.onopen = function () {
             console.log("websocket 已連線上");
         }
 
-        ws.onclose = function() {
+        ws.onclose = function () {
             console.log("連線已關閉...");
         };
-        
+
 
         /*===================================================
           ____ __  __ ____     ____                          
@@ -43,7 +43,7 @@ $(function(){
             // TODO
         };
 
-    }else{
+    } else {
         // 瀏覽器不支援 WebSocket
         console.log("您的瀏覽器不支援 WebSocket!");
     }
@@ -59,12 +59,12 @@ $(function(){
     ===================================================*/
     //註冊button callback func
     //cofirm btn
-    $("#comfirm_btn").on('click',function(){
+    $("#comfirm_btn").on('click', function () {
         var packet = {
             cmd: 'comfrim',
             data: global_var.board_no
         };
-        
+
         ws.send(JSON.stringify(packet) + '\n');
     });
 
