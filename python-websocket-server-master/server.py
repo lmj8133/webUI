@@ -5,6 +5,9 @@ import time
 import os
 import re
 import json
+import base64
+
+from headerFileMaker import *
 
 # Called for every client connecting (after handshake)
 def new_client(client, server):
@@ -43,9 +46,20 @@ def message_received(client, server, message):
     #print(message)
     rx_data = message.strip('\n')
     rx_data = json.loads(rx_data)
-    print(rx_data)
+
     if rx_data["cmd"] == 'comfrim': 
         print(rx_data["data"])
+
+    if rx_data["cmd"] == 'headerFile':
+        decode_data = get_file(rx_data["data"][rx_data["data"].find(',')+1:])
+        file_name = rx_data["name"]
+        if file_name == '':
+            file_name = 'headerFile.h'
+        with open(file_name, 'w') as f:
+            f.write(decode_data)
+        
+    if rx_data["cmd"] == 'exit':
+        pass
  
 #========================================================================================================
 # __        __   _    ____             _        _      ____                              ___       _ _   
@@ -55,7 +69,7 @@ def message_received(client, server, message):
 #    \_/\_/ \___|_.__/____/ \___/ \___|_|\_\___|\__|  |____/ \___|_|    \_/ \___|_|     |___|_| |_|_|\__|
 #
 #========================================================================================================
-PORT=9002
+PORT = 9002
 server = WebsocketServer(PORT , host='0.0.0.0')
 server.set_fn_new_client(new_client)
 server.set_fn_client_left(client_left)

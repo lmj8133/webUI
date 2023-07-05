@@ -128,7 +128,10 @@
             <hr class="sidebar-divider d-none d-md-block">
 
             <div class="my-2 text-center">
-                <button class="btn btn-success" id="comfirm_btn">Comfrim</button>
+                <button class="btn btn-success" id="comfirm-btn">Comfrim</button>
+            </div>
+            <div class="my-2 text-center">
+                <button class="btn btn-success" id="exit-btn">Exit</button>
             </div>
         </ul>
         <!-- End of Sidebar -->
@@ -154,9 +157,15 @@
                 <div id="main_content" class="container-fluid">
 
                     <!-- Page Heading -->
-                    <div class="row">
+                    <div class="row col-lg-8 col-md-10">
+                        <div class="input-group mb-3 col-md-12">
+                            <div class="custom-file">
+                                <input type="file" id="file" name="file" class="custom-file-input" />
+                                <label for="file" class="custom-file-label">Select Header File</label>
+                            </div>
+                        </div>
 
-                        <div id="pd_section" class="col-lg-11">
+                        <div id="pd_section" class="col-md-12">
                             <!-- file slect -->
 
 
