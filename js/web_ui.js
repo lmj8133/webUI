@@ -80,14 +80,6 @@ function create_checkbox_widget(para) {
 }
 
 $(function () {
-    $('#file').on('change', function () {
-        global_var.file = this.files[0];
-        console.log(global_var.file); // degug
-
-        var file_url = getObjectURL(global_var.file);
-        console.log(file_url); // degug
-    });
-
     $.getJSON("../js/json/ui.json", function (jsons) {
         global_var.ui_json = jsons;  // pointer to json
         global_var.data = [] // init data
