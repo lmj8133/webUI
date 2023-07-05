@@ -107,16 +107,14 @@ $(function () {
     $('#wrapper').on('dragover', function (e) {
         e.stopPropagation();
         e.preventDefault();
-        console.log("#wrapper: dropEffect = " + e.dataTransfer.dropEffect + " ; effectAllowed = " + e.dataTransfer.effectAllowed);
-        e.dataTransfer.effectAllowed = 'none';
+        e.dataTransfer = e.originalEvent.dataTransfer;
         e.dataTransfer.dropEffect = 'none';
     });
     // 拖曳區域圖式
     $('#content').on('dragover', function (e) {
         e.stopPropagation();
         e.preventDefault();
-        console.log("#content: dropEffect = " + e.dataTransfer.dropEffect + " ; effectAllowed = " + e.dataTransfer.effectAllowed);
-        e.dataTransfer.effectAllowed = 'copy';
+        e.dataTransfer = e.originalEvent.dataTransfer;
         e.dataTransfer.dropEffect = 'copy';
     });
     
