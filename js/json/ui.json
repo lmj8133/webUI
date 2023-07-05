@@ -1,99 +1,135 @@
-{
-    "id" : "board_define",
-
-    "title":"#define BOARD_NO",
-
-    "widget_type:" : "dropdown",
-    
-    "result" : {
-        "id": "board_result",
-        "default_text": "Select Board"
+[
+    {
+        "id": "board_define",
+        "title": "#define BOARD_NO",
+        "widget_type": "dropdown",
+        "result": {
+            "id": "board_result",
+            "default_text": "Select Board"
+        },
+        "content": [
+            {
+                "id": "board4",
+                "value": "BOARD4",
+                "type_board": "DB",
+                "type_ic": "AG9421",
+                "note": "88 pin demo board(AG9421)"
+            },
+            {
+                "id": "board5",
+                "value": "BOARD5",
+                "type_board": "EVB",
+                "type_ic": "AG9410",
+                "note": "48 pin EVB(AG9410)"
+            },
+            {
+                "id": "board7",
+                "value": "BOARD7",
+                "type_board": "Customer",
+                "type_ic": "AG9411",
+                "note": "PX(AG9411)"
+            },
+            {
+                "id": "board8",
+                "value": "BOARD8",
+                "type_board": "Customer",
+                "type_ic": "AG9421",
+                "note": "Fullink, 88 pin(AG9421)"
+            },
+            {
+                "id": "board9",
+                "value": "BOARD9",
+                "type_board": "Customer",
+                "type_ic": "AG9421",
+                "note": "Kingtron(AG9421)"
+            },
+            {
+                "id": "board11",
+                "value": "BOARD11",
+                "type_board": "DB",
+                "type_ic": "AG9410",
+                "note": "64 pin demo board with single type-c port(AG9410)"
+            },
+            {
+                "id": "board12",
+                "value": "BOARD12",
+                "type_board": "DB",
+                "type_ic": "AG9411",
+                "note": "64 pin demo board with dual type-c port(AG9411)"
+            },
+            {
+                "id": "board13",
+                "value": "BOARD13",
+                "type_board": "Customer",
+                "type_ic": "AG9421",
+                "note": "C-Smartlink, 88 pin(AG9421)"
+            },
+            {
+                "id": "board14",
+                "value": "BOARD14",
+                "type_board": "DB",
+                "type_ic": "AG9410",
+                "note": "56 pin demo board(AG9410)"
+            },
+            {
+                "id": "board21",
+                "value": "BOARD21",
+                "type_board": "FAE",
+                "type_ic": "AG9411P",
+                "note": "(AG9411P)"
+            },
+            {
+                "id": "board31",
+                "value": "BOARD31",
+                "type_board": "FAE",
+                "type_ic": "AG9411",
+                "note": "FAE reference circuit for PCB with cable plug, 2 lane(AG9411)"
+            },
+            {
+                "id": "board32",
+                "value": "BOARD32",
+                "type_board": "FAE",
+                "type_ic": "AG9421",
+                "note": "FAE reference circuit with dual type-c receptacle, 2 lane(AG9411)"
+            }
+        ]
     },
-    
-    "content":[
-        {
-        "id": "board4",
-        "value":"BOARD4",
-        "type_board":"DB",
-        "type_ic":"AG9421",
-        "note":"88 pin demo board(AG9421)"
+    {
+        "id": "application_types",
+        "title": "#define ApplicationType",
+        "widget_type": "dropdown",
+        "result": {
+            "id": "application_result",
+            "default_text": "Select Application Type"
         },
-        {
-        "id": "board5",
-        "value":"BOARD5",
-        "type_board":"EVB",
-        "type_ic":"AG9410",
-        "note":"48 pin EVB(AG9410)"
+        "content": [
+            {
+                "id": "application1",
+                "value": "Application_Generic_2L_HBR3",
+                "note": "2 lane HBR3"
+            },
+            {
+                "id": "application2",
+                "value": "AppType_Generic_4L_HBR2",
+                "note": "4 lane HBR2"
+            },
+            {
+                "id": "application3",
+                "value": "Application_Fpga",
+                "note": "FPGA"
+            }
+        ]
+    },
+    {
+        "id": "Crystal_Mode",
+        "title": "#define Crystal_Mode",
+        "widget_type": "checkbox",
+        "result": {
+            "id": "crystal_mode_result",
+            "default_text": "Select Crystal Mode"
         },
-        {
-        "id": "board7",
-        "value":"BOARD7",
-        "type_board":"Customer",
-        "type_ic":"AG9411",
-        "note":"PX(AG9411)"
-        },
-        {
-        "id": "board8",
-        "value":"BOARD8",
-        "type_board":"Customer",
-        "type_ic":"AG9421",
-        "note":"Fullink, 88 pin(AG9421)"
-        },
-        {
-        "id": "board9",
-        "value":"BOARD9",
-        "type_board":"Customer",
-        "type_ic":"AG9421",
-        "note":"Kingtron(AG9421)"
-        },
-        {
-        "id": "board11",
-        "value":"BOARD11",
-        "type_board":"DB",
-        "type_ic":"AG9410",
-        "note":"64 pin demo board with single type-c port(AG9410)"
-        },
-        {
-        "id": "board12",
-        "value":"BOARD12",
-        "type_board":"DB",
-        "type_ic":"AG9411",
-        "note":"64 pin demo board with dual type-c port(AG9411)"
-        },
-        {
-        "id": "board13",    
-        "value":"BOARD13",
-        "type_board":"Customer",
-        "type_ic":"AG9421",
-        "note":"C-Smartlink, 88 pin(AG9421)"
-        },
-        {
-        "id": "board14",
-        "value":"BOARD14",
-        "type_board":"DB",
-        "type_ic":"AG9410",
-        "note":"56 pin demo board(AG9410)"
-        },
-        {
-        "id": "board21",
-        "value":"BOARD21",
-        "type_board":"FAE",
-        "type_ic":"AG9411P",
-        "note":"(AG9411P)"
-        },
-        {
-        "id": "board31",    
-        "value":"BOARD31",
-        "type_board":"FAE",
-        "type_ic":"AG9411",
-        "note":"FAE reference circuit for PCB with cable plug, 2 lane(AG9411)"
-        },
-        {
-        "id": "board32",     
-        "value":"BOARD32",
-        "type_board":"FAE",
-        "type_ic":"AG9421",
-        "note":"FAE reference circuit with dual type-c receptacle, 2 lane(AG9411)"
-        }
-    ]
-}
+        "content": {
+                "note": "for test"
+            }
+    }
+]
