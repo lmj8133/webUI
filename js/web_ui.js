@@ -10,6 +10,7 @@ function create_dropdown_widget(para) {
     var result = para.result;
     var item_num = para.content.length;
     var content = para.content;
+    var dependency = para.dependency;
 
     var dropdown_widget_html_str =
         '<div class="input-group mb-3 justify-content-between">' +
@@ -20,7 +21,8 @@ function create_dropdown_widget(para) {
         '<div class="input-group-append dropright">' +
         '<button class="btn btn-outline-secondary dropdown-toggle" id="' +
         result.id +
-        '" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+        '" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"' +
+        (dependency ? 'disabled' : '') + '>' +
         result.default_text +
         '</button>' +
         '<div class="dropdown-menu">';
@@ -35,6 +37,9 @@ function create_dropdown_widget(para) {
                 continue;
             }
             tip_str += tip + ": " + content[i][tip] + "\r\n";
+        }
+        if (dependency != "") {
+            tip_str += "Dependency: " + dependency + "\r\n";
         }
         dropdown_widget_html_str += '<a class="dropdown-item" id="' + content[i].id + '" data-toggle="tooltip" title="' + tip_str + '">' + content[i].value + '</a>';
     }
@@ -52,6 +57,7 @@ function create_checkbox_widget(para) {
     var title = para.title;
     var item_num = para.content.length;
     var content = para.content;
+    var dependency = para.dependency;
 
     var checkbox_widget_html_str =
         '<div class="input-group mb-3 justify-content-between">' +
@@ -75,10 +81,18 @@ function create_checkbox_widget(para) {
         }
         tip_str += tip + ": " + content[tip] + "\r\n";
     }
+    if (dependency != "") {
+        tip_str += "Dependency: " + dependency + "\r\n";
+    }
 
-    checkbox_widget_html_str += tip_str + '">';
+    checkbox_widget_html_str += tip_str + '"';
+
+    if (dependency != "") {
+        checkbox_widget_html_str += ' disabled';
+    }
 
     checkbox_widget_html_str +=
+        '>' +
         '</div>' +
         '</div>' +
         '</div>';
@@ -120,7 +134,8 @@ $(function () {
                 });
             }
 
-            if (json.dependency) {
+            if (json.dependency != "") {
+                let id = "";
                 if (json.widget_type == "dropdown") {
                     id = json.result.id;
                 }
@@ -130,9 +145,9 @@ $(function () {
 
                 $("#" + json.dependency).on("change", function () {
                     if (this.checked) {
-                        $("#" + id).prop("disabled", false);
+                        $("#" + id).removeAttr("disabled");
                     } else {
-                        $("#" + id).prop("disabled", true);
+                        $("#" + id).attr("disabled", true);
                     }
                 });
             }
