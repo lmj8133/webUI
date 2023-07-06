@@ -10,10 +10,9 @@ function create_dropdown_widget(para) {
     var result = para.result;
     var item_num = para.content.length;
     var content = para.content;
-    var dependency = para.dependency;
     
     var dropdown_widget_html_str =
-        '<div class="input-group mb-3">' +
+        '<div class="input-group mb-3 justify-content-between">' +
         '<div class="input-group-prepend">' +
         '<label class="input-group-text" id="inputGroup-sizing-default" for="' + result.id +
         '"> ' + title + '</label> ' +
@@ -47,13 +46,11 @@ function create_dropdown_widget(para) {
 function create_checkbox_widget(para) {
     var id = para.id;
     var title = para.title;
-    var result = para.result;
     var item_num = para.content.length;
     var content = para.content;
-    var dependency = para.dependency;
 
     var checkbox_widget_html_str =
-        '<div class="input-group mb-3">' +
+        '<div class="input-group mb-3 justify-content-between">' +
         '<div class="input-group-prepend">' +
         '<label class="input-group-text" id="inputGroup-sizing-default" for="' + id + '" >' +
         title + '</label>' +
@@ -116,11 +113,18 @@ $(function () {
             }
 
             if (json.dependency) {
-                $("#" + json.id).on("change", function () {
+                if (json.widget_type == "dropdown") {
+                    id = json.result.id;
+                }
+                else if (json.widget_type == "checkbox") {
+                    id = json.id;
+                }
+
+                $("#" + json.dependency).on("change", function () {
                     if (this.checked) {
-                        $("#" + json.dependency.id).prop("disabled", false);
+                        $("#" + id).prop("disabled", false);
                     } else {
-                        $("#" + json.dependency.id).prop("disabled", true);
+                        $("#" + id).prop("disabled", true);
                     }
                 });
             }
