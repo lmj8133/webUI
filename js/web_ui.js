@@ -1,69 +1,118 @@
 var global_var = {
-    ui_json : undefined,
-    board_no : undefined,
+    ui_json: undefined,
+    file: undefined,
+    data: undefined,
 };
 
-function create_dropdown_widget(para){
+function create_dropdown_widget(para) {
     var id = para.id;
     var title = para.title;
     var result = para.result;
     var item_num = para.content.length;
     var content = para.content;
 
-    var dropdown_widget_html_str = 
-    '<div class="btn-group dropright">' +
-        '<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
-            'Options' +
+    var dropdown_widget_html_str =
+        '<div class="input-group mb-3">' +
+        '<div class="input-group-prepend">' +
+        '<label class="input-group-text" id="inputGroup-sizing-default" for="' + result.id +
+        '"> ' + title + '</label> ' +
+        '</div>' +
+        '<div class="input-group-append dropright">' +
+        '<button class="btn btn-outline-secondary dropdown-toggle" id="' +
+        result.id +
+        '" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+        result.default_text +
         '</button>' +
-        '<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
+        '<div class="dropdown-menu">';
 
-    for(var i = 0; i<item_num; i++){
-        var tip_str = 
-        "Board Type: " + content[i].type_board + '\r\n' +
-        "IC Type: " + content[i].type_ic + '\r\n' +
-        "Note: " + content[i].note;
-        dropdown_widget_html_str += '<a class="dropdown-item"}" id="' + content[i].id + '" data-toggle="tooltip" title="' + tip_str + '">' + content[i].value + '</a>';
+    for (var i = 0; i < item_num; i++) {
+        var tip_str = "";
+        for (var tip in content[i]) {
+            if (tip == 'id' || tip == 'value')
+                continue;
+            tip_str += tip + ": " + content[i][tip] + "\r\n";
+        }
+        dropdown_widget_html_str += '<a class="dropdown-item" id="' + content[i].id + '" data-toggle="tooltip" title="' + tip_str + '">' + content[i].value + '</a>';
     }
 
     dropdown_widget_html_str +=
-        '</div>' + 
-    '</div>';
-
-    var dropdowm_widget_html_str = 
-    '<div id=' + id + '" class="card shadow mb-4">' + 
-        '<div class="card-header py-3">' +
-            '<h5 class="m-0 font-weight-bold text-primary">' + title + '</h5>' +
         '</div>' +
-
-        '<div class="card-body">' +
-            '<p id="' + result.id + '">' + result.default_text + '<p>' +
-            dropdown_widget_html_str +
         '</div>' +
-    '</div>';
+        '</div>';
 
-    return dropdowm_widget_html_str;
+    return dropdown_widget_html_str;
 }
-        
-$(function(){
-    
-    $.getJSON("../js/json/ui.json", function(json) {
-        global_var.ui_json = json;  // pointer to json
-    
-        // draw ui
-        $("#pd_section").append(create_dropdown_widget(json));
 
-        // 
-        for(var i = 0; i<json.content.length; i++){
-            $("#" + json.content[i].id).on( "click", function() {
-                for(var j = 0; j<json.content.length; j++){
-                    if(this.id == json.content[j].id){
-                        $("#" + json.result.id).text(json.content[j].value);
-                    }
+function create_checkbox_widget(para) {
+    var id = para.id;
+    var title = para.title;
+    var result = para.result;
+    var item_num = para.content.length;
+    var content = para.content;
+
+    var checkbox_widget_html_str =
+        '<div class="input-group mb-3">' +
+        '<div class="input-group-prepend">' +
+        '<label class="input-group-text" id="inputGroup-sizing-default" for="' + id + '" >' +
+        title + '</label>' +
+        '</div>' +
+        '<div class="input-group-append">' +
+        '<div class="input-group-text">' +
+        '<input type="checkbox" id="' +
+        id +
+        '" data-toggle="tooltip" title="';
+
+    var tip_str = "";
+    for (var tip in content) {
+        if (tip == 'id' || tip == 'value')
+            continue;
+        tip_str += tip + ": " + content[tip] + "\r\n";
+    }
+
+    checkbox_widget_html_str += tip_str + '">';
+
+    checkbox_widget_html_str +=
+        '</div>' +
+        '</div>' +
+        '</div>';
+
+    return checkbox_widget_html_str;
+}
+
+$(function () {
+    $.getJSON("../js/json/ui.json", function (jsons) {
+        global_var.ui_json = jsons;  // pointer to json
+        global_var.data = [] // init data
+
+        // draw ui
+        for (const json of jsons) {
+            // if type is dropdown
+            if (json.widget_type == "dropdown") {
+                $("#pd_section").append(create_dropdown_widget(json));
+
+                for (var i = 0; i < json.content.length; i++) {
+                    $("#" + json.content[i].id).on("click", function () {
+                        for (var j = 0; j < json.content.length; j++) {
+                            if (this.id == json.content[j].id) {
+                                $("#" + json.result.id).text(json.content[j].value);
+                            }
+                        }
+
+                        global_var.data[json.title] = this.id;
+                        console.log(global_var.data); // degug
+                    });
                 }
-                
-                global_var.board_no = this.id;
-                alert(global_var.board_no);
-            });
+            }
+            // if type is checkbox
+            else if (json.widget_type == "checkbox") {
+                $("#pd_section").append(create_checkbox_widget(json));
+
+                $("#" + json.id).on("change", function () {
+                    global_var.data[json.id] = this.checked;
+                    console.log(global_var.data); // degug
+                });
+            }
+
         }
     });
 

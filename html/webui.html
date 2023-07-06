@@ -13,9 +13,7 @@
 
     <!-- Custom fonts for this template-->
     <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
     <!-- Custom styles for this template-->
     <link href="../css/sb-admin-2.min.css" rel="stylesheet">
@@ -46,8 +44,7 @@
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Components</span>
                 </a>
@@ -62,13 +59,11 @@
 
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                    aria-expanded="true" aria-controls="collapseUtilities">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
                     <i class="fas fa-fw fa-wrench"></i>
                     <span>Utilities</span>
                 </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                    data-parent="#accordionSidebar">
+                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Custom Utilities:</h6>
                         <a class="collapse-item" href="#">Colors</a>
@@ -89,13 +84,11 @@
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item active">
-                <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
-                    aria-controls="collapsePages">
+                <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
                     <span>Pages</span>
                 </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages"
-                    data-parent="#accordionSidebar">
+                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Login Screens:</h6>
                         <a class="collapse-item" href="#">Login</a>
@@ -133,9 +126,12 @@
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
-            
+
             <div class="my-2 text-center">
-                <button class="btn btn-success" id="comfirm_btn">Comfrim</button>
+                <button class="btn btn-success" id="comfirm-btn">Comfrim</button>
+            </div>
+            <div class="my-2 text-center">
+                <button class="btn btn-success" id="exit-btn">Exit</button>
             </div>
         </ul>
         <!-- End of Sidebar -->
@@ -145,7 +141,7 @@
 
             <!-- Main Content -->
             <div id="content">
-                
+
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
@@ -158,72 +154,24 @@
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div id ="main_content" class="container-fluid">
+                <div id="main_content" class="container-fluid">
 
                     <!-- Page Heading -->
-                    <div class="row">
+                    <div class="row col-lg-8 col-md-10">
+                        <div class="input-group mb-3 col-md-12">
+                            <div class="custom-file">
+                                <input type="file" id="file" name="file" class="custom-file-input" accept=".h" />
+                                <label for="file" class="custom-file-label" id="file-label">Select Header File</label>
+                            </div>
+                        </div>
 
-                        <div id ="pd_section" class="col-lg-6">
+                        <div id="pd_section" class="col-md-12">
+                            <!-- file slect -->
 
-                            <!-- Circle Buttons -->
-                            <!-- <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">#define BOARD_NO</h6>
-                                </div>
-
-                                <div class="card-body">
-                                    <div class="accordion" id="accordionExample">
-                                        <div class="card">
-                                          <div class="card-header" id="headingOne">
-                                            <h2 class="mb-0">
-                                              <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                Collapsible Group Item #1
-                                              </button>
-                                            </h2>
-                                          </div>
-                                      
-                                          <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                                            <div class="card-body">
-                                              Some placeholder content for the first accordion panel. This panel is shown by default, thanks to the <code>.show</code> class.
-                                            </div>
-                                          </div>
-                                        </div>
-
-                                        <div class="card">
-                                          <div class="card-header" id="headingTwo">
-                                            <h2 class="mb-0">
-                                              <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                Collapsible Group Item #2
-                                              </button>
-                                            </h2>
-                                          </div>
-                                          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                                            <div class="card-body">
-                                              Some placeholder content for the second accordion panel. This panel is hidden by default.
-                                            </div>
-                                          </div>
-                                        </div>
-                                        <div class="card">
-                                          <div class="card-header" id="headingThree">
-                                            <h2 class="mb-0">
-                                              <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                                Collapsible Group Item #3
-                                              </button>
-                                            </h2>
-                                          </div>
-                                          <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
-                                            <div class="card-body">
-                                              And lastly, the placeholder content for the third and final accordion panel. This panel is hidden by default.
-                                            </div>
-                                          </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> -->
 
                         </div>
 
-                        <div class="col-lg-6">
+                        <!-- <div class="col-lg-6">
 
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
@@ -233,7 +181,8 @@
                                     <p>Works with any button colors, just use the <code>.btn-icon-split</code> class and
                                         the markup in the examples below. The examples below also use the
                                         <code>.text-white-50</code> helper class on the icons for additional styling,
-                                        but it is not required.</p>
+                                        but it is not required.
+                                    </p>
                                     <a href="#" class="btn btn-primary btn-icon-split">
                                         <span class="icon text-white-50">
                                             <i class="fas fa-flag"></i>
@@ -299,12 +248,12 @@
                                     </a>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <!-- /.container-fluid -->
 
-                
+
             </div>
             <!-- End of Main Content -->
 
@@ -339,8 +288,8 @@
     <!-- Custom scripts for all pages-->
     <script src="../js/sb-admin-2.min.js"></script>
 
-    <script src="../js/web_ui.js" ></script>
-    <script src="../js/communication.js" ></script>
+    <script src="../js/web_ui.js"></script>
+    <script src="../js/communication.js"></script>
 </body>
 
 </html>
