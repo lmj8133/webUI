@@ -22,6 +22,8 @@ $(function () {
             data_buf = data_buf.split(",");                    //save to data array
             var cmd = data_buf[0];                             //get cmd
 
+            console.log("cmd: " + cmd);
+            console.log("data: " + data_buf);
             // cmd handler
             // TODO
         };

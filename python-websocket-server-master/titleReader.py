@@ -1,57 +1,51 @@
-import base64
 import json
 import os
-import re
-import sys
-import time
+
 
 def find_title(decode_data):
-    file = open('js\json\ui.json','r')
-    data = file.read()
+    file = open(os.getcwd()+'/js/json/ui.json', 'r')
+    json_data = file.read()
     file.close()
+    json_data = json.loads(json_data)
 
-    titles = []          
-    title_recieved = {}
-    for i in data:
-        titles.append(i['title'])
-
-    #config = "#define BOARD_NO                            BOARD31"
+    datas = {
+        'title': [x['title'] for x in json_data],
+        'id': [x['id'] for x in json_data],
+        'length': len(json_data)
+    }
+    found_data = {}
+    for title_num in range(datas['length']):
+        found_data[datas['title'][title_num]] = {
+            'value': None,
+            'line': None,
+            'id': datas['id'][title_num]
+        }
 
     for line_num in range(len(decode_data)):
         line = decode_data[line_num]
-        for title in titles:
-            if line.strip().find(title) != -1:
-                arr = line[line.strip().find(title) + len(title):].split(' ')
-                
-                if arr != []:
+        for title_num in range(datas['length']):
+            title = datas['title'][title_num]
+            title_found = line.strip().find(title)
+            if title_found != -1:
+                args = line.strip()[title_found + len(title):].strip().split(' ')
+                if args[0] and title_found == 0:
+                    if line.find(title + ' ') == -1:
+                        continue
                     #print(arr[0])
-                    reslut = arr[0]
-                    title_recieved[title] =  reslut         
-                elif arr == [] and line.strip().find(title) != 0:
+                    found_data[title]['value'] =  args[0]
+                elif (not args[0]) and title_found != 0:
                     #print('Off')
-                    reslut = 'Off'
-                    title_recieved[title] =  reslut
-                elif arr == [] and line.strip().find(title) == 0:
+                    found_data[title]['value'] =  False
+                elif (not args[0]) and title_found == 0:
                     #print('On')
-                    reslut = 'On'
-                    title_recieved[title] =  reslut
-            # else:
-            #     #print('title NOT found.')
-            #     reslut = 'title NOT found.'
-    return reslut
+                    found_data[title]['value'] =  True
+                found_data[title]['line'] =  line_num
 
+    return found_data
 
+"""
+json_data: list of dict, dict = {'title': 'title', 'id': 'id', ...}
+datas: dict, {'title': ['title1', 'title2', ...], 'id': ['id1', 'id2', ...], 'length': number}
+found_data: dict, {'title1': {'value': 'value', 'line': 'line'}, 'title2': {'value': 'value', 'line': 'line'}, ...}
 
-
- 
-
-
-
-
-        
-
-
-
-
-    
-    
+"""
