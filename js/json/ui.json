@@ -3,7 +3,7 @@
         "id": "board_define",
         "title": "#define BOARD_NO",
         "widget_type": "dropdown",
-        "dependency": "none",
+        "dependency": "",
         "result": {
             "id": "board_result",
             "default_text": "Select Board"
@@ -99,7 +99,7 @@
         "id": "application_types",
         "title": "#define ApplicationType",
         "widget_type": "dropdown",
-        "dependency": "none",
+        "dependency": "",
         "result": {
             "id": "application_result",
             "default_text": "Select Application Type"
@@ -121,7 +121,7 @@
         "id": "CC_ADC",
         "title": "#define CC_ADC",
         "widget_type": "checkbox",
-        "dependency": "none",
+        "dependency": "",
         "content": {
                 "note": "Detect CC voltage with ADC"
             }
@@ -130,7 +130,7 @@
         "id": "REVERSE_CHARGE",
         "title": "#define REVERSE_CHARGE",
         "widget_type": "checkbox",
-        "dependency": "none",
+        "dependency": "",
         "content": {
                 "note": "Transmit USB data from charger port"
             }
@@ -139,7 +139,7 @@
         "id": "SUPPORT_NINTENDO",
         "title": "#define SUPPORT_NINTENDO",
         "widget_type": "checkbox",
-        "dependency": "none",
+        "dependency": "",
         "content": {
                 "note": "Support Nintendo Switch"
             }
@@ -175,7 +175,7 @@
         "id": "Transmit_U3_Signal",
         "title": "#define Transmit_U3_Signal",
         "widget_type": "checkbox",
-        "dependency": "none",
+        "dependency": "",
         "content": {
                 "note": "Transmit U3 with data line"
             }
