@@ -10,7 +10,8 @@ function create_dropdown_widget(para) {
     var result = para.result;
     var item_num = para.content.length;
     var content = para.content;
-
+    var dependency = para.dependency;
+    
     var dropdown_widget_html_str =
         '<div class="input-group mb-3">' +
         '<div class="input-group-prepend">' +
@@ -49,6 +50,7 @@ function create_checkbox_widget(para) {
     var result = para.result;
     var item_num = para.content.length;
     var content = para.content;
+    var dependency = para.dependency;
 
     var checkbox_widget_html_str =
         '<div class="input-group mb-3">' +
@@ -113,6 +115,15 @@ $(function () {
                 });
             }
 
+            if (json.dependency) {
+                $("#" + json.id).on("change", function () {
+                    if (this.checked) {
+                        $("#" + json.dependency.id).prop("disabled", false);
+                    } else {
+                        $("#" + json.dependency.id).prop("disabled", true);
+                    }
+                });
+            }
         }
     });
 
