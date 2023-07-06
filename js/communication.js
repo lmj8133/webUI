@@ -16,16 +16,33 @@ $(function () {
 
 
         // command parser
-        ws.onmessage = function (evt) {
-            var dataReceive = evt.data;                        //dataReceive為字串
-            var data_buf = dataReceive.trim();                 //remove '\n'
-            data_buf = data_buf.split(",");                    //save to data array
-            var cmd = data_buf[0];                             //get cmd
+        ws.onmessage = function (e) {
+            var packet = JSON.parse(e.data);
+            var cmd = packet.cmd;
+            var data = packet.data;
 
             console.log("cmd: " + cmd);
-            console.log("data: " + data_buf);
+            console.log("data: " + data);
             // cmd handler
             // TODO
+            if (cmd == 'found_title') {
+                function changeValue(id, value) {
+                    if (!value) {
+                        return;
+                    }
+                    var type = $("#" + id).attr('type');
+                    if (type == 'checkbox') {
+                        $("#" + id).prop('checked', value);
+                    } else {
+                        $("#" + id).text(value);
+                    }
+                    console.log("changeValue, id: " + id + ", value: " + value);
+                }
+
+                for (var data_id in data) {
+                    changeValue(data_id, data[data_id]);
+                }
+            }
         };
 
     } else {

@@ -15,12 +15,12 @@ function create_dropdown_widget(para) {
     var dropdown_widget_html_str =
         '<div class="input-group mb-3 justify-content-between">' +
         '<div class="input-group-prepend flex-grow-1">' +
-        '<label class="input-group-text w-100" id="inputGroup-sizing-default" for="' + result.id +
+        '<label class="input-group-text w-100" id="inputGroup-sizing-default" for="' + id +
         '"> ' + title + '</label> ' +
         '</div>' +
         '<div class="input-group-append dropright">' +
         '<button class="btn btn-outline-secondary dropdown-toggle" id="' +
-        result.id +
+        id +
         '" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"' +
         (dependency ? 'disabled' : '') + '>' +
         result.default_text +

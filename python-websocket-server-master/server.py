@@ -14,7 +14,7 @@ from websocket_server import WebsocketServer
 
 def new_client(client, server):
     print("New client connected and was given id %d" % client['id'])
-    server.send_message_to_all("Hey all, a new client has joined us")
+    server.send_message_to_all(json.dumps({"data": "Hey all, a new client has joined us"}))
 
 # Called for every client disconnecting
 
