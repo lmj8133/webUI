@@ -14,8 +14,8 @@ function create_dropdown_widget(para) {
 
     var dropdown_widget_html_str =
         '<div class="input-group mb-3 justify-content-between">' +
-        '<div class="input-group-prepend">' +
-        '<label class="input-group-text" id="inputGroup-sizing-default" for="' + result.id +
+        '<div class="input-group-prepend flex-grow-1">' +
+        '<label class="input-group-text w-100" id="inputGroup-sizing-default" for="' + result.id +
         '"> ' + title + '</label> ' +
         '</div>' +
         '<div class="input-group-append dropright">' +
@@ -61,8 +61,8 @@ function create_checkbox_widget(para) {
 
     var checkbox_widget_html_str =
         '<div class="input-group mb-3 justify-content-between">' +
-        '<div class="input-group-prepend">' +
-        '<label class="input-group-text" id="inputGroup-sizing-default" for="' + id + '" >' +
+        '<div class="input-group-prepend flex-grow-1">' +
+        '<label class="input-group-text w-100" id="inputGroup-sizing-default" for="' + id + '" >' +
         title + '</label>' +
         '</div>' +
         '<div class="input-group-append">' +
