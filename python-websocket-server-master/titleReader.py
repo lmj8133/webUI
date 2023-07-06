@@ -2,7 +2,7 @@ import json
 import os
 
 
-def find_title(decode_data):
+def header_analyze(decode_data):
     file = open(os.getcwd()+'/js/json/ui.json', 'r')
     json_data = file.read()
     file.close()

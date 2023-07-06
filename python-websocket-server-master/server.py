@@ -5,8 +5,8 @@ import re
 import threading
 import time
 
-from headerFileMaker import *
-from titleReader import *
+from headerFileMaker import get_file
+from titleReader import header_analyze
 from websocket_server import WebsocketServer
 
 # Called for every client connecting (after handshake)
@@ -65,7 +65,7 @@ def message_received(client, server, message):
             f.write('\n'.join(decode_data))
 
         global saved_data
-        saved_data = find_title(decode_data)
+        saved_data = header_analyze(decode_data)
         title_recieve = {}
         for data in saved_data:
             title_recieve[saved_data[data]['id']] = saved_data[data]['value']

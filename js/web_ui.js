@@ -55,7 +55,6 @@ function create_dropdown_widget(para) {
 function create_checkbox_widget(para) {
     var id = para.id;
     var title = para.title;
-    var item_num = para.content.length;
     var content = para.content;
     var dependency = para.dependency;
 
