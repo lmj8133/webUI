@@ -10,7 +10,7 @@ function create_dropdown_widget(para) {
     var result = para.result;
     var item_num = para.content.length;
     var content = para.content;
-    
+
     var dropdown_widget_html_str =
         '<div class="input-group mb-3 justify-content-between">' +
         '<div class="input-group-prepend">' +
@@ -30,6 +30,10 @@ function create_dropdown_widget(para) {
         for (var tip in content[i]) {
             if (tip == 'id' || tip == 'value')
                 continue;
+            if (tip == 'note') {
+                tip_str += content[tip] + "\r\n";
+                continue;
+            }
             tip_str += tip + ": " + content[i][tip] + "\r\n";
         }
         dropdown_widget_html_str += '<a class="dropdown-item" id="' + content[i].id + '" data-toggle="tooltip" title="' + tip_str + '">' + content[i].value + '</a>';
@@ -65,6 +69,10 @@ function create_checkbox_widget(para) {
     for (var tip in content) {
         if (tip == 'id' || tip == 'value')
             continue;
+        if (tip == 'note') {
+            tip_str += content[tip] + "\r\n";
+            continue;
+        }
         tip_str += tip + ": " + content[tip] + "\r\n";
     }
 
