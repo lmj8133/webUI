@@ -10,8 +10,6 @@ def get_file(file):
     decode_file = base64.decodebytes(file.encode('utf-8'))
     decode_file = decode_file.decode('utf-8')
     decode_file = decode_file.splitlines()
-    decode_file = '\n'.join(decode_file)
-    print(decode_file)
     return decode_file
 
 

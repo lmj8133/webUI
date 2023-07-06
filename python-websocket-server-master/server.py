@@ -8,6 +8,7 @@ import json
 import base64
 
 from headerFileMaker import *
+from titleReader import *
 
 # Called for every client connecting (after handshake)
 def new_client(client, server):
@@ -56,8 +57,14 @@ def message_received(client, server, message):
         if file_name == '':
             file_name = 'headerFile.h'
         with open(file_name, 'w') as f:
-            f.write(decode_data)
-        
+            
+            f.write('\n'.join(decode_data))
+
+
+        title_recieve = find_title(decode_data)
+        server.send_message(client, title_recieve)
+
+
     if rx_data["cmd"] == 'exit':
         pass
  
