@@ -2,12 +2,13 @@ import base64
 import json
 import os
 import re
+import shutil
 import threading
 import time
 
 from headerFileMaker import get_file
-from titleReader import header_analyze
 from titlechange import title_change
+from titleReader import header_analyze
 from websocket_server import WebsocketServer
 
 # Called for every client connecting (after handshake)
@@ -15,6 +16,8 @@ from websocket_server import WebsocketServer
 class WebsocketServerClosed(Exception):
     pass
 
+saved_data_dict = {}
+file_name_dict = {}
 
 def new_client(client, server):
     print("New client connected and was given id %d" % client['id'])
@@ -24,7 +27,16 @@ def new_client(client, server):
 
 
 def client_left(client, server):
+    client_id = f"_{client['id']}"
     print("Client(%d) disconnected" % client['id'])
+    if client_id in saved_data_dict:
+        del saved_data_dict[client_id]
+    if client_id in file_name_dict:
+        try:
+            shutil.rmtree(os.path.join(os.getcwd(), "temp", f"client{client_id}"))
+        except:
+            pass
+        del file_name_dict[client_id]
 
 # Called when a client sends a message
 
@@ -32,53 +44,58 @@ def client_left(client, server):
 #   value: old_value
 #   line: line num in .h
 #   id: for send
-saved_data = {}
-file_name = ""
 
 def message_received(client, server, message):
     rx_data = 0
-    # ===============================================================================================================================
-    #   ___       _       _             _    _____                           _          __  ____                                __
-    #  / _ \ _ __(_) __ _(_)_ __   __ _| |  | ____|_  ____ _ _ __ ___  _ __ | | ___    / / |  _ \ ___  ___  ___ _ ____   _____  \ \
-    # | | | | '__| |/ _` | | '_ \ / _` | |  |  _| \ \/ / _` | '_ ` _ \| '_ \| |/ _ \  | |  | |_) / _ \/ __|/ _ \ '__\ \ / / _ \  | |
-    # | |_| | |  | | (_| | | | | | (_| | |  | |___ >  < (_| | | | | | | |_) | |  __/  | |  |  _ <  __/\__ \  __/ |   \ V /  __/  | |
-    #  \___/|_|  |_|\__, |_|_| |_|\__,_|_|  |_____/_/\_\__,_|_| |_| |_| .__/|_|\___|  | |  |_| \_\___||___/\___|_|    \_/ \___|  | |
-    #               |___/                                             |_|              \_\                                      /_/
-    # ===============================================================================================================================
-    # if len(message) > 200:
-    #    message = message[:200]+'..'
-    # print("Client(%d) said: %s" % (client['id'], message))
-    # server.send_message_to_all("Client(%d) said: %s" % (client['id'], message))
 
-    # ==============================================================================================================
-    # ____        _            ____                              _                ____  _        _   _
-    # |  _ \  __ _| |_ __ _    / ___|___  _ ____   _____ _ __ ___(_) ___  _ __    / ___|| |_ __ _| |_(_) ___  _ __
-    # | | | |/ _` | __/ _` |  | |   / _ \| '_ \ \ / / _ \ '__/ __| |/ _ \| '_ \   \___ \| __/ _` | __| |/ _ \| '_ \
-    # | |_| | (_| | || (_| |  | |__| (_) | | | \ V /  __/ |  \__ \ | (_) | | | |   ___) | || (_| | |_| | (_) | | | |
-    # |____/ \__,_|\__\__,_|   \____\___/|_| |_|\_/ \___|_|  |___/_|\___/|_| |_|  |____/ \__\__,_|\__|_|\___/|_| |_|
-    #
-    # ==============================================================================================================
-    # print(message)
+    # data conversion station
     rx_data = message.strip('\n')
     rx_data = json.loads(rx_data)
-    global file_name
-    global saved_data
+
+    client_id = f"_{client['id']}"
+
+    global file_name_dict
+    if client_id in file_name_dict:
+        file_name = file_name_dict[client_id]
+    else:
+        file_name = ""
+    global saved_data_dict
+    if client_id in saved_data_dict:
+        saved_data = saved_data_dict[client_id]
+    else:
+        saved_data = {}
+
     if rx_data["cmd"] == 'comfrim':
-        new_file = title_change(saved_data, rx_data['data'])
-        if file_name == '':
-            file_name = 'new_headerFile.h'
-        with open(file_name, 'w') as f :
+        dir_name = os.path.join(os.getcwd(), "temp", f"client{client_id}")
+        new_file = title_change(saved_data, rx_data['data'], os.path.join(dir_name, file_name))
+        with open(os.path.join(dir_name, file_name), 'w') as f :
             f.write('\n'.join(new_file))
+        server.send_message(client, json.dumps({
+            "cmd": "finish",
+            "data": {
+                "path": os.path.join("temp", f"client{client_id}", file_name),
+                "filename": file_name}}))
 
     if rx_data["cmd"] == 'headerFile':
         decode_data = get_file(rx_data["data"][rx_data["data"].find(',')+1:])
         file_name = rx_data["name"]
         if file_name == '':
             file_name = 'headerFile.h'
-        with open(file_name, 'w') as f:          
+
+        # prepare dir
+        dir_name = os.path.join(os.getcwd(), "temp", f"client{client_id}")
+        if not os.path.exists(dir_name):
+            os.makedirs(dir_name)
+        else:
+            for file in os.listdir(dir_name):
+                os.remove(os.path.join(dir_name, file))
+
+        with open(os.path.join(dir_name, file_name), 'w') as f:
             f.write('\n'.join(decode_data))
+        file_name_dict[client_id] = file_name
 
         saved_data = header_analyze(decode_data)
+        saved_data_dict[client_id] = saved_data
         title_recieve = {}
         for data in saved_data:
             title_recieve[saved_data[data]['id']] = saved_data[data]['value']
@@ -95,14 +112,7 @@ def message_received(client, server, message):
         raise WebsocketServerClosed
 
 
-# ========================================================================================================
-# __        __   _    ____             _        _      ____                              ___       _ _
-# \ \      / /__| |__/ ___|  ___   ___| | _____| |_   / ___|  ___ _ ____   _____ _ __   |_ _|_ __ (_) |_
-#  \ \ /\ / / _ \ '_ \___ \ / _ \ / __| |/ / _ \ __|  \___ \ / _ \ '__\ \ / / _ \ '__|   | || '_ \| | __|
-#   \ V  V /  __/ |_) |__) | (_) | (__|   <  __/ |_    ___) |  __/ |   \ V /  __/ |      | || | | | | |_
-#    \_/\_/ \___|_.__/____/ \___/ \___|_|\_\___|\__|  |____/ \___|_|    \_/ \___|_|     |___|_| |_|_|\__|
-#
-# ========================================================================================================
+# WebSocketServer init
 def server_run():
     PORT = 9002
     server = WebsocketServer(PORT, host='0.0.0.0')

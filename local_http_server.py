@@ -4,6 +4,7 @@ import json
 import os
 import sys
 import threading
+import shutil
 
 # 意義為加入include path
 sys.path.append(os.getcwd()+'/python-websocket-server-master')
@@ -36,11 +37,15 @@ main_thread = threading.Thread(target=server.server_run)
 main_thread.daemon = True
 main_thread.start()
 
+def exit_program():
+    for dir in os.listdir(os.path.join(os.getcwd(), "temp")):
+        shutil.rmtree(os.path.join(os.getcwd(), "temp", dir))
+    print("\033[1;31;40mprogram exit\033[0m")
+    exit()
+
 while True:
     try:
         if main_thread.is_alive() == False or t.is_alive() == False:
-            print("\033[1;31;40mprogram exit\033[0m")
-            exit()
+            exit_program()
     except:
-        print("\033[1;31;40mprogram exit\033[0m")
-        exit()
+        exit_program()
