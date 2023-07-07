@@ -105,6 +105,7 @@ $(function () {
         global_var.data = {} // init data
 
         // draw ui
+        $("#loading").remove();
         for (const json of jsons) {
             // if type is dropdown
             if (json.widget_type == "dropdown") {
@@ -112,13 +113,8 @@ $(function () {
 
                 for (var i = 0; i < json.content.length; i++) {
                     $("#" + json.content[i].id).on("click", function () {
-                        for (var j = 0; j < json.content.length; j++) {
-                            if (this.id == json.content[j].id) {
-                                $("#" + json.result.id).text(json.content[j].value);
-                            }
-                        }
-
-                        global_var.data[json.title] = this.id;
+                        $("#" + json.id).text(this.text);
+                        global_var.data[json.title] = this.text;
                         console.log(global_var.data); // degug
                     });
                 }

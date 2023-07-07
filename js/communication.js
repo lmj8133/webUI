@@ -21,8 +21,6 @@ $(function () {
             var cmd = packet.cmd;
             var data = packet.data;
 
-            console.log("cmd: " + cmd);
-            console.log("data: " + data);
             // cmd handler
             // TODO
             if (cmd == 'found_title') {
@@ -42,6 +40,29 @@ $(function () {
                 for (var data_id in data) {
                     changeValue(data_id, data[data_id]);
                 }
+
+                for (const json of global_var.ui_json) {
+                    let dependency = json.dependency;
+                    if (dependency) {
+                        let id = "";
+                        if (json.widget_type == "dropdown") {
+                            id = json.result.id;
+                        }
+                        else if (json.widget_type == "checkbox") {
+                            id = json.id;
+                        }
+
+                        if ($("#" + dependency + ":checked").val()) {
+                            $("#" + id).removeAttr("disabled");
+                        } else {
+                            $("#" + id).attr("disabled", true);
+                        }
+                    }
+                }
+            }
+            else if (cmd == 'finish') {
+                Object.assign(document.createElement('a'),
+                    { href: 'http://localhost/' + data['path'], download: data['filename'] }).click();
             }
         };
 
@@ -56,6 +77,11 @@ $(function () {
     //cofirm btn
 
     $("#comfirm-btn").on('click', function () {
+        if (!global_var.file) {
+            console.warn('global_var.file is null');
+            alert("Please upload Header file")
+            return false;
+        }
         var packet = {
             cmd: 'comfrim',
             data: global_var.data
@@ -120,7 +146,9 @@ $(function () {
         e.stopPropagation();
         e.preventDefault();
 
+        global_var.data = {};
         var files = e.originalEvent.dataTransfer.files;
+        global_var.file = files[0];
         if (!headerFileUpload(files)) {
             alert('Not a header file');
         }
@@ -128,6 +156,8 @@ $(function () {
 
     // 實現選取檔案上傳
     $('#file').on('change', function () {
+        global_var.data = {};
+        global_var.file = this.files[0];
         headerFileUpload(this.files);
     });
 
