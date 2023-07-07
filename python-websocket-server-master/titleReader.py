@@ -39,6 +39,8 @@ def header_analyze(decode_data):
                 elif (not args[0]) and title_found == 0:
                     #print('On')
                     found_data[title]['value'] =  True
+                else:
+                    continue
                 found_data[title]['line'] =  line_num
 
     return found_data
