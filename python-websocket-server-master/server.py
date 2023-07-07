@@ -7,6 +7,7 @@ import time
 
 from headerFileMaker import get_file
 from titleReader import header_analyze
+from titlechange import title_change
 from websocket_server import WebsocketServer
 
 # Called for every client connecting (after handshake)
