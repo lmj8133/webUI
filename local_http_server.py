@@ -2,9 +2,9 @@
 import http.server
 import json
 import os
+import shutil
 import sys
 import threading
-import shutil
 
 # 意義為加入include path
 sys.path.append(os.getcwd()+'/python-websocket-server-master')
@@ -47,5 +47,7 @@ while True:
     try:
         if main_thread.is_alive() == False or t.is_alive() == False:
             exit_program()
+    except SystemExit:
+        break
     except:
         exit_program()

@@ -91,11 +91,18 @@ $(function () {
     });
 
     $("#exit-btn").on('click', function () {
-        var packet = {
-            cmd: 'exit'
-        };
+        if (confirm("確定要關閉程式？")) {
+            var packet = {
+                cmd: 'exit'
+            };
 
-        ws.send(JSON.stringify(packet) + '\n');
+            ws.send(JSON.stringify(packet) + '\n');
+
+            alert("程式已關閉");
+
+            window.href = "about:blank";
+            window.close();
+        }
     });
 
 

@@ -13,8 +13,6 @@ from websocket_server import WebsocketServer
 
 # Called for every client connecting (after handshake)
 
-class WebsocketServerClosed(Exception):
-    pass
 
 saved_data_dict = {}
 file_name_dict = {}
@@ -108,9 +106,7 @@ def message_received(client, server, message):
     if rx_data["cmd"] == 'exit':
         print("receive exit cmd")
         server.send_message_to_all(json.dumps({"cmd": "exit"}))
-        server.close()
-        raise WebsocketServerClosed
-
+        server.shutdown()
 
 # WebSocketServer init
 def server_run():
