@@ -102,7 +102,7 @@ function create_checkbox_widget(para) {
 $(function () {
     $.getJSON("../js/json/ui.json", function (jsons) {
         global_var.ui_json = jsons;  // pointer to json
-        global_var.data = [] // init data
+        global_var.data = {} // init data
 
         // draw ui
         for (const json of jsons) {
@@ -128,7 +128,7 @@ $(function () {
                 $("#pd_section").append(create_checkbox_widget(json));
 
                 $("#" + json.id).on("change", function () {
-                    global_var.data[json.id] = this.checked;
+                    global_var.data[json.title] = this.checked;
                     console.log(global_var.data); // degug
                 });
             }
