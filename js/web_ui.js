@@ -33,7 +33,7 @@ function create_dropdown_widget(para) {
             if (tip == 'id' || tip == 'value')
                 continue;
             if (tip == 'note') {
-                tip_str += content[tip] + "\r\n";
+                tip_str += content[i][tip] + "\r\n";
                 continue;
             }
             tip_str += tip + ": " + content[i][tip] + "\r\n";
