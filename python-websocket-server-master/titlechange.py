@@ -5,16 +5,32 @@ import re
 import sys
 import time
 import shutil
+import linecache
 #from titleReader import *
 
-json_file = 'js\json\ui.json'
-new_json = 'js\json\new.json'
-shutil.copy(json_file, new_json)
+def title_change(save_data, data):
+    new_file = []
+    with open("config.h", 'r+') as f:
+        new_file.append(f.readline())
 
-def title_change(decode_data):
-    file = open('js\json\new.json','r')
-    data = file.read()
-    file.close()
+    for title in data:
+        line_num = save_data[title]['line']
+        line_content = new_file[line_num]
+        change = data[title]['value']
 
-    for title in dictionary['title']:
-        dictionary['title','address']
+        if change != save_data[title]['value']:
+            if type(change) != bool:
+                new_file[line_num] = line_content.lstripe(' ').replace(save_data[title]['value'], data[title]['value'])
+            else:
+                if change == False:
+                    new_file[line_num] = '//'+line_content.lstripe(' ')
+                else:
+                    new_file[line_num] =line_content.lstripe(' /')
+        else:
+            pass
+    
+    return new_file
+
+
+        
+# rx_data = dict, {'title1': {'value': 'value', 'line': 'line', 'id': 'id'}, 'title2': {'value': 'value', 'line': 'line', 'id': 'id'}, ...}

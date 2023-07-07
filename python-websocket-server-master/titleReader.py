@@ -39,19 +39,9 @@ def find_title(decode_data):
             #     #print('title NOT found.')
             #     reslut = 'title NOT found.'
     return reslut
+"""
+json_data: list of dict, dict = {'title': 'title', 'id': 'id', ...}
+datas: dict, {'title': ['title1', 'title2', ...], 'id': ['id1', 'id2', ...], 'length': number}
+found_data: dict, {'title1': {'value': 'value', 'line': 'line', 'id': 'id'}, 'title2': {'value': 'value', 'line': 'line', 'id': 'id'}, ...}
 
-
-
-
- 
-
-
-
-
-        
-
-
-
-
-    
-    
+"""
