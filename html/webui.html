@@ -12,11 +12,11 @@
     <title>Algoltek</title>
 
     <!-- Custom fonts for this template-->
-    <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" loading="lazy">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" loading="lazy">
 
     <!-- Custom styles for this template-->
-    <link href="../css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="../css/sb-admin-2.min.css" rel="stylesheet" loading="lazy">
 
 </head>
 
@@ -30,7 +30,7 @@
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="https://www.algoltek.com.tw/">
-                <img src="../img/icon_32x32(AG).ico" alt="" class="img-fluid rounded-circle">
+                <img src="../img/icon_32x32(AG).ico" alt="" class="img-fluid rounded-circle" loading="lazy">
                 <div class="sidebar-brand-text mx-3">Algoltek</div>
             </a>
 
@@ -166,6 +166,11 @@
                         </div>
 
                         <div id="pd_section" class="col-md-12">
+                            <div class="d-flex justify-content-center" id="loading">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
                             <!-- file slect -->
 
 
@@ -290,6 +295,7 @@
 
     <script src="../js/web_ui.js"></script>
     <script src="../js/communication.js"></script>
+    <link rel="preload" href="../js/json/ui.json" as="fetch" crossOrigin="anonymous">
 </body>
 
 </html>
