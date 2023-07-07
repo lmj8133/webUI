@@ -62,7 +62,7 @@ def message_received(client, server, message):
     rx_data = message.strip('\n')
     rx_data = json.loads(rx_data)
     global file_name
-
+    global saved_data
     if rx_data["cmd"] == 'comfrim':
         new_file = title_change(saved_data, rx_data['data'])
         if file_name == '':
@@ -78,7 +78,6 @@ def message_received(client, server, message):
         with open(file_name, 'w') as f:          
             f.write('\n'.join(decode_data))
 
-        global saved_data
         saved_data = header_analyze(decode_data)
         title_recieve = {}
         for data in saved_data:
