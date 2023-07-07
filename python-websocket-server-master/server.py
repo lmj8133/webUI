@@ -27,8 +27,14 @@ def client_left(client, server):
 
 # Called when a client sends a message
 
+# save_data: dict, {'title1': {'value': 'value', 'line': 'line', 'id': 'id'}, 'title2': {'value': 'value', 'line': 'line', 'id': 'id'}, ...}
+#   value: old_value
+#   line: line num in .h
+#   id: for send
 saved_data = {}
-def message_received(client, server: WebsocketServer, message):
+file_name = ""
+
+def message_received(client, server, message):
     rx_data = 0
     # ===============================================================================================================================
     #   ___       _       _             _    _____                           _          __  ____                                __
@@ -54,17 +60,21 @@ def message_received(client, server: WebsocketServer, message):
     # print(message)
     rx_data = message.strip('\n')
     rx_data = json.loads(rx_data)
+    global file_name
 
     if rx_data["cmd"] == 'comfrim':
-        print(rx_data["data"])
+        new_file = title_change(saved_data, rx_data['data'])
+        if file_name == '':
+            file_name = 'new_headerFile.h'
+        with open(file_name, 'w') as f :
+            f.write('\n'.join(new_file))
 
     if rx_data["cmd"] == 'headerFile':
         decode_data = get_file(rx_data["data"][rx_data["data"].find(',')+1:])
         file_name = rx_data["name"]
         if file_name == '':
             file_name = 'headerFile.h'
-        with open(file_name, 'w') as f:
-
+        with open(file_name, 'w') as f:          
             f.write('\n'.join(decode_data))
 
         global saved_data
