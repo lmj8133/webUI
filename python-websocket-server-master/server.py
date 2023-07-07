@@ -11,6 +11,9 @@ from websocket_server import WebsocketServer
 
 # Called for every client connecting (after handshake)
 
+class WebsocketServerClosed(Exception):
+    pass
+
 
 def new_client(client, server):
     print("New client connected and was given id %d" % client['id'])
@@ -25,7 +28,7 @@ def client_left(client, server):
 # Called when a client sends a message
 
 saved_data = {}
-def message_received(client, server, message):
+def message_received(client, server: WebsocketServer, message):
     rx_data = 0
     # ===============================================================================================================================
     #   ___       _       _             _    _____                           _          __  ____                                __
@@ -76,7 +79,10 @@ def message_received(client, server, message):
         server.send_message(client, json.dumps(send_data))
 
     if rx_data["cmd"] == 'exit':
-        pass
+        print("receive exit cmd")
+        server.send_message_to_all(json.dumps({"cmd": "exit"}))
+        server.close()
+        raise WebsocketServerClosed
 
 
 # ========================================================================================================
@@ -87,10 +93,11 @@ def message_received(client, server, message):
 #    \_/\_/ \___|_.__/____/ \___/ \___|_|\_\___|\__|  |____/ \___|_|    \_/ \___|_|     |___|_| |_|_|\__|
 #
 # ========================================================================================================
-PORT = 9002
-server = WebsocketServer(PORT, host='0.0.0.0')
-server.set_fn_new_client(new_client)
-server.set_fn_client_left(client_left)
-server.set_fn_message_received(message_received)
-print("Web Socket work on " + str(PORT) + " Port")
-server.run_forever()
+def server_run():
+    PORT = 9002
+    server = WebsocketServer(PORT, host='0.0.0.0')
+    server.set_fn_new_client(new_client)
+    server.set_fn_client_left(client_left)
+    server.set_fn_message_received(message_received)
+    print("Web Socket work on " + str(PORT) + " Port")
+    server.run_forever()
