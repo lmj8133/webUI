@@ -32,14 +32,21 @@ t.daemon = True
 t.start()
 print("Http Server work on", port ,"Port")
 
+# temp dir
+if not os.path.exists(os.path.join(os.getcwd(), "temp")):
+    os.makedirs(os.path.join(os.getcwd(), "temp"))
+
 # main 執行緒 run websocket
 main_thread = threading.Thread(target=server.server_run)
 main_thread.daemon = True
 main_thread.start()
 
 def exit_program():
+    # remove temp dir
     for dir in os.listdir(os.path.join(os.getcwd(), "temp")):
         shutil.rmtree(os.path.join(os.getcwd(), "temp", dir))
+    os.rmdir(os.path.join(os.getcwd(), "temp"))
+
     print("\033[1;31;40mprogram exit\033[0m")
     exit()
 
