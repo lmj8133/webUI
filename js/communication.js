@@ -12,6 +12,7 @@ $(function () {
 
         ws.onclose = function () {
             console.log("連線已關閉...");
+            alert("連線已關閉...")
         };
 
 
