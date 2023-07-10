@@ -1,1 +1,1 @@
-python local_http_server.py
+python main.py

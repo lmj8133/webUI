@@ -1,30 +1,63 @@
-import base64
+import http.server as hs
 import json
 import os
-import re
 import shutil
-import threading
-import time
 
-from headerFileMaker import get_file
-from titlechange import title_change
-from titleReader import header_analyze
+from headerFileMaker import get_file, header_analyze, header_change
 from websocket_server import WebsocketServer
 
-# Called for every client connecting (after handshake)
+########################
+#     http server      #
+########################
+
+def http_server_run(port):
+    server_address = ('0.0.0.0', port)
+    httpd = hs.HTTPServer(server_address, hs.SimpleHTTPRequestHandler)
+    print("Http Server work on", port ,"Port")
+    httpd.serve_forever()
+
+########################
+#   websocket server   #
+########################
+
+# WebSocketServer init
+def socket_server_run():
+    PORT = 9002
+    server = WebsocketServer(PORT, host='0.0.0.0')
+    server.set_fn_new_client(new_client)
+    server.set_fn_client_left(client_left)
+    server.set_fn_message_received(message_received)
+    print("Web Socket work on", str(PORT), "Port")
+    server.run_forever()
 
 
+# save_data: dict, {'title1': {'value': 'value', 'line': 'line', 'id': 'id'}, 'title2': {'value': 'value', 'line': 'line', 'id': 'id'}, ...}
+#   value: old_value
+#   line: line num in .h
+#   id: for send
 saved_data_dict = {}
 file_name_dict = {}
+client_num = 0
 
+# Close the server
+def close_server(server):
+    print("receive exit cmd")
+    server.send_message_to_all(json.dumps({"cmd": "exit"}))
+    server.shutdown()
+    server.server_close()
+
+# Called for every client connecting (after handshake)
 def new_client(client, server):
+    global client_num
+    client_num += 1
     print("New client connected and was given id %d" % client['id'])
     server.send_message_to_all(json.dumps({"data": "Hey all, a new client has joined us"}))
 
+
 # Called for every client disconnecting
-
-
 def client_left(client, server):
+    global client_num
+    client_num -= 1
     client_id = f"_{client['id']}"
     print("Client(%d) disconnected" % client['id'])
     if client_id in saved_data_dict:
@@ -36,13 +69,8 @@ def client_left(client, server):
             pass
         del file_name_dict[client_id]
 
+
 # Called when a client sends a message
-
-# save_data: dict, {'title1': {'value': 'value', 'line': 'line', 'id': 'id'}, 'title2': {'value': 'value', 'line': 'line', 'id': 'id'}, ...}
-#   value: old_value
-#   line: line num in .h
-#   id: for send
-
 def message_received(client, server, message):
     rx_data = 0
 
@@ -64,10 +92,15 @@ def message_received(client, server, message):
         saved_data = {}
 
     if rx_data["cmd"] == 'comfrim':
+        # prepare dir
         dir_name = os.path.join(os.getcwd(), "temp", f"client{client_id}")
-        new_file = title_change(saved_data, rx_data['data'], os.path.join(dir_name, file_name))
+        new_file = header_change(saved_data, rx_data['data'], os.path.join(dir_name, file_name))
+
+        # write file
         with open(os.path.join(dir_name, file_name), 'w') as f :
             f.write('\n'.join(new_file))
+
+        # send file info
         server.send_message(client, json.dumps({
             "cmd": "finish",
             "data": {
@@ -75,7 +108,9 @@ def message_received(client, server, message):
                 "filename": file_name}}))
 
     if rx_data["cmd"] == 'headerFile':
+        # decode data
         decode_data = get_file(rx_data["data"][rx_data["data"].find(',')+1:])
+
         file_name = rx_data["name"]
         if file_name == '':
             file_name = 'headerFile.h'
@@ -88,12 +123,16 @@ def message_received(client, server, message):
             for file in os.listdir(dir_name):
                 os.remove(os.path.join(dir_name, file))
 
+        # write file
         with open(os.path.join(dir_name, file_name), 'w') as f:
             f.write('\n'.join(decode_data))
         file_name_dict[client_id] = file_name
 
+        # analyze header file
         saved_data = header_analyze(decode_data)
         saved_data_dict[client_id] = saved_data
+
+        # send value
         title_recieve = {}
         for data in saved_data:
             title_recieve[saved_data[data]['id']] = saved_data[data]['value']
@@ -104,16 +143,5 @@ def message_received(client, server, message):
         server.send_message(client, json.dumps(send_data))
 
     if rx_data["cmd"] == 'exit':
-        print("receive exit cmd")
-        server.send_message_to_all(json.dumps({"cmd": "exit"}))
-        server.shutdown()
+        close_server(server)
 
-# WebSocketServer init
-def server_run():
-    PORT = 9002
-    server = WebsocketServer(PORT, host='0.0.0.0')
-    server.set_fn_new_client(new_client)
-    server.set_fn_client_left(client_left)
-    server.set_fn_message_received(message_received)
-    print("Web Socket work on " + str(PORT) + " Port")
-    server.run_forever()
