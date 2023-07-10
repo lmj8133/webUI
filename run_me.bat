@@ -1,3 +1,9 @@
-@echo off
-start http://localhost
-python local_http_server.py
+@REM @ECHO OFF
+
+CD .\frontend
+npm run build
+CD ..
+
+CD .\backend
+.\venv\Scripts\activate
+flask run
