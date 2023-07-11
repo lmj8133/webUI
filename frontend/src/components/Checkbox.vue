@@ -10,10 +10,16 @@
         <input
           type="checkbox"
           :id="data.id"
-          data-toggle="tooltip"
-          title=""
-          v-model="value"
+          :disabled="disabled"
+          v-model="new_value"
+          @input="$emit('value-changed', data.title, new_value)"
+          @change="$emit('value-changed', data.title, new_value)"
         />
+        <b-tooltip :target="data.id" triggers="hover">
+          <div class="text-left">
+            {{ tooltip() }}
+          </div>
+        </b-tooltip>
       </div>
     </b-input-group-append>
   </b-input-group>
@@ -30,12 +36,32 @@ export default {
     value: {
       type: String,
       default: ""
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
+  emits: ["value-changed"],
   data() {
     return {
-      config_topic: "Config Modifier"
+      new_value: this.value
     };
+  },
+  methods: {
+    tooltip() {
+      var tip_str = "";
+      for (var tip in this.data.content) {
+        if (tip == "id" || tip == "value") continue;
+        if (tip == "note") {
+          tip_str += this.data.content[tip] + "\r\n";
+          continue;
+        }
+        tip_str += tip + ": " + this.data.content[tip] + "\r\n";
+      }
+
+      return tip_str;
+    }
   }
 };
 </script>
