@@ -20,15 +20,26 @@
       <b-container class="mb-3 px-0" v-for="data in datas" :key="data.id">
         <Dropdown
           :data="data"
+          :value="
+            new_value[data.title] == undefined
+              ? new_value[data.title]
+              : old_value[data.id]
+          "
+          :disabled="dependencyCheck(data)"
           v-if="data.widget_type == 'dropdown'"
           @value-changed="(title, new_value) => valueChanged(title, new_value)"
         />
         <checkbox
           :data="data"
+          :value="new_value[data.title] || old_value[data.id]"
+          :disabled="old_value[data.dependency] || false"
           v-if="data.widget_type == 'checkbox'"
           @value-changed="(title, new_value) => valueChanged(title, new_value)"
         />
       </b-container>
+      <b-button id="comfirm-btn" variant="success" size="lg" @click="comfirm()"
+        >Comfrim</b-button
+      >
     </b-container>
   </div>
 </template>
@@ -63,19 +74,33 @@ export default {
       msg: "Welcome",
       datas: this.datas,
       upload_form_id: "upload_form_id",
-      value: {},
-      new_value: {}
+      old_value: {},
+      new_value: {},
+      uuid: "",
+      file_name: ""
     };
   },
   computed: {
     return_value() {
-      return this.value;
+      return this.old_value;
     }
   },
   methods: {
+    dependencyCheck(data) {
+      if (!data.dependency) {
+        return false;
+      }
+      if (this.new_value[data.dependency] != undefined) {
+        this;
+      }
+      return this.old_value[data.dependency];
+    },
     valueChanged(title, new_value) {
       console.log(this.new_value);
-      if (this.value[title] != undefined && new_value == this.value[title]) {
+      if (
+        this.old_value[title] != undefined &&
+        new_value == this.old_value[title]
+      ) {
         delete this.new_value[title];
         return;
       }
@@ -94,9 +119,38 @@ export default {
           { headers: { "Content-Type": "multipart/form-data" } }
         )
         .then(response => {
-          for (var i = 0; i < response.data.length; i++) {
-            this.datas[i].result.default_text = response.data[i].default_text;
+          let datas = response.data.data;
+          if (response.data.status != "success") {
+            console.log(response.data);
+            return;
           }
+          this.old_value = datas.value;
+          this.uuid = datas.uuid;
+        });
+      this.file_name = file.name;
+    },
+    comfirm() {
+      if (Object.keys(this.new_value).length == 0) {
+        alert("No change");
+        return;
+      }
+      var url = "/download";
+      axios
+        .post(
+          url,
+          {
+            uuid: this.uuid,
+            change: this.new_value
+          },
+          { responseType: "blob" }
+        )
+        .then(response => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", this.file_name);
+          document.body.appendChild(link);
+          link.click();
         });
     }
   }
@@ -104,20 +158,4 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h1,
-h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
+<style scoped></style>

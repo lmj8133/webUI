@@ -2,17 +2,16 @@ import json
 import os
 import sys
 import uuid
-import shutil
 
 from app import app
 from app.headerFileMaker import header_analyze, header_change
-from flask import jsonify, render_template, request
+from flask import jsonify, render_template, request, send_from_directory
 
 
-# @app.route('/')
-# @app.route('/index')
-# def index():
-#     return render_template('index.html')
+@app.route('/')
+@app.route('/index')
+def index():
+    return render_template('index.html')
 
 @app.route('/api', methods=['GET'])
 def data():
@@ -37,7 +36,7 @@ def upload():
     if (not os.path.exists(os.path.join('app', 'static', 'temp'))):
         os.mkdir(os.path.join('app', 'static', 'temp'))
 
-    file_path = os.path.join('app', 'static', 'temp', file_uuid + file.filename)
+    file_path = os.path.join('app', 'static', 'temp', file_uuid + '.h')
     file.save(file_path)
 
     saved_data = {}
@@ -60,23 +59,28 @@ def upload():
         }
     })
 
-@app.route('/download', methods=['GET'])
+@app.route('/download', methods=['POST'])
 def download():
-    data = request.args.get('data')
+    data = request.get_json()
     file_uuid = data['uuid']
-    file_path = os.path.join('app', 'static', 'temp', file_uuid + '.json')
+    file_path = os.path.join('app', 'static', 'temp', file_uuid + '.h')
 
     saved_data = {}
-    with open(file_path) as f:
+    with open(file_path.replace('.h', '.json')) as f:
         saved_data = json.load(f)
 
+    response = send_from_directory('', 'static/temp/' + file_uuid + '.h')
     change_data = header_change(saved_data, data['change'], file_path.replace('.json', '.h'))
+    with open(file_path, 'w') as f:
+        for line in change_data:
+            f.write(line + '\n')
+    try:
+        response = send_from_directory('', os.path.join('static', 'temp', file_uuid + '.h'))
+        print(response)
+    except:
+        print('Unexpected error:', sys.exc_info()[0])
 
-    shutil.rmtree(file_path)
-    shutil.rmtree(file_path.replace('.json', '.h'))
-    
+    # os.remove(file_path)
+    os.remove(file_path.replace('.h', '.json'))
 
-    return jsonify({
-        'status': 'success',
-        'data': change_data
-    })
+    return response

@@ -34,8 +34,8 @@ export default {
       default: () => {}
     },
     value: {
-      type: String,
-      default: ""
+      type: String || Number || Boolean,
+      default: null
     },
     disabled: {
       type: Boolean,

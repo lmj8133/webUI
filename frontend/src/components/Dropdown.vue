@@ -11,7 +11,7 @@
     <b-input-group-append class="input-group-append" :id="data.id">
       <b-dropdown
         :id="data.result.id"
-        :text="value ? value : data.result.default_text"
+        :text="value == undefined ? value : data.result.default_text"
         dropright
         variant="outline-secondary"
         :disabled="disabled"
@@ -45,8 +45,8 @@ export default {
       default: () => {}
     },
     value: {
-      type: String,
-      default: ""
+      type: String || Number || Boolean,
+      default: null
     },
     disabled: {
       type: Boolean,
