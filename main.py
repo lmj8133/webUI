@@ -3,6 +3,7 @@ import os
 import shutil
 import sys
 import threading
+import asyncio
 
 # 加入include path
 sys.path.append(os.getcwd()+'/python-server')
@@ -26,14 +27,6 @@ if __name__ == "__main__":
     else:
         port = 80
 
-    # http server
-    hppt_thread = threading.Thread(
-        target=server.http_server_run,
-        args=(port,),
-        daemon=True
-    )
-    hppt_thread.start()
-
     # websocket server
     socket_thread = threading.Thread(
         target=server.socket_server_run,
@@ -41,13 +34,23 @@ if __name__ == "__main__":
     )
     socket_thread.start()
 
+    # http server
+    # hppt_thread = threading.Thread(
+    #     target=server.http_server_run,
+    #     args=(port,),
+    #     daemon=True
+    # )
+    # hppt_thread.start()
+    asyncio.run(server.http_server_run(port))
+
     # temp dir
     if not os.path.exists(os.path.join(os.getcwd(), "temp")):
         os.makedirs(os.path.join(os.getcwd(), "temp"))
 
     while True:
         try:
-            if socket_thread.is_alive() and hppt_thread.is_alive():
+            # if socket_thread.is_alive() and hppt_thread.is_alive():
+            if socket_thread.is_alive():
                 continue
             exit_program()
         except SystemExit:

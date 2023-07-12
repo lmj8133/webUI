@@ -17,10 +17,10 @@ from websocket_server import WebsocketServer
 #     print("Http Server work on", port ,"Port")
 #     httpd.serve_forever()
 
-def http_server_run(port, host='localhost'):
+async def http_server_run(port, host='localhost'):
     http_server = http_server_init()
     print("Http Server work on", port ,"Port")
-    http_server.run(port=port, host=host)
+    await http_server.run(port=port, host=host)
 
 def http_server_init():
     app = Flask(__name__,
