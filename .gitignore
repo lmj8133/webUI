@@ -26,3 +26,4 @@ types_py.taghl
 *.si4project/*
 *.backup
 config.h
+temp/*
