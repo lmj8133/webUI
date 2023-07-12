@@ -15,7 +15,7 @@ datas: dict, {'title': ['title1', 'title2', ...], 'id': ['id1', 'id2', ...], 'le
 found_data: dict, {'title1': {'value': 'value', 'line': 'line'}, 'title2': {'value': 'value', 'line': 'line'}, ...}
 """
 def header_analyze(decode_data):
-    file = open(os.getcwd()+'/js/json/ui.json', 'r')
+    file = open(os.getcwd()+'/static/js/json/ui.json', 'r')
     json_data = file.read()
     file.close()
     json_data = json.loads(json_data)

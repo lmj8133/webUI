@@ -1,8 +1,9 @@
-import http.server as hs
+# import http.server as hs
 import json
 import os
 import shutil
 
+from flask import Flask, render_template
 from headerFileMaker import get_file, header_analyze, header_change
 from websocket_server import WebsocketServer
 
@@ -10,12 +11,27 @@ from websocket_server import WebsocketServer
 #     http server      #
 ########################
 
-def http_server_run(port):
-    server_address = ('0.0.0.0', port)
-    httpd = hs.HTTPServer(server_address, hs.SimpleHTTPRequestHandler)
-    print("Http Server work on", port ,"Port")
-    httpd.serve_forever()
+# def http_server_run(port):
+#     server_address = ('0.0.0.0', port)
+#     httpd = hs.HTTPServer(server_address, hs.SimpleHTTPRequestHandler)
+#     print("Http Server work on", port ,"Port")
+#     httpd.serve_forever()
 
+def http_server_run(port, host='localhost'):
+    http_server = http_server_init()
+    print("Http Server work on", port ,"Port")
+    http_server.run(port=port, host=host)
+
+def http_server_init():
+    app = Flask(__name__,
+                static_folder="../static",
+                template_folder="../html")
+    app.add_url_rule('/', '/', webui)
+    return app
+
+def webui():
+    return render_template("webui.html")
+    
 ########################
 #   websocket server   #
 ########################
@@ -27,7 +43,7 @@ def socket_server_run():
     server.set_fn_new_client(new_client)
     server.set_fn_client_left(client_left)
     server.set_fn_message_received(message_received)
-    print("Web Socket work on", str(PORT), "Port")
+    print("Web Socket work on", PORT, "Port")
     server.run_forever()
 
 
@@ -93,7 +109,7 @@ def message_received(client, server, message):
 
     if rx_data["cmd"] == 'comfrim':
         # prepare dir
-        dir_name = os.path.join(os.getcwd(), "temp", f"client{client_id}")
+        dir_name = os.path.join(os.getcwd(), "static", "temp", f"client{client_id}")
         new_file = header_change(saved_data, rx_data['data'], os.path.join(dir_name, file_name))
 
         # write file
@@ -104,7 +120,7 @@ def message_received(client, server, message):
         server.send_message(client, json.dumps({
             "cmd": "finish",
             "data": {
-                "path": os.path.join("temp", f"client{client_id}", file_name),
+                "path": os.path.join("static", "temp", f"client{client_id}", file_name),
                 "filename": file_name}}))
 
     if rx_data["cmd"] == 'headerFile':
@@ -116,7 +132,7 @@ def message_received(client, server, message):
             file_name = 'headerFile.h'
 
         # prepare dir
-        dir_name = os.path.join(os.getcwd(), "temp", f"client{client_id}")
+        dir_name = os.path.join(os.getcwd(), "static", "temp", f"client{client_id}")
         if not os.path.exists(dir_name):
             os.makedirs(dir_name)
         else:

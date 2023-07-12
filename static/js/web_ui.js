@@ -100,7 +100,7 @@ function create_checkbox_widget(para) {
 }
 
 $(function () {
-    $.getJSON("../js/json/ui.json", function (jsons) {
+    $.getJSON("static/js/json/ui.json", function (jsons) {
         global_var.ui_json = jsons;  // pointer to json
         global_var.data = {} // init data
 
