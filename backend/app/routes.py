@@ -9,7 +9,7 @@ from flask import jsonify, render_template, request, send_from_directory
 
 
 @app.route('/')
-@app.route('/index')
+@app.route('/configheader')
 def index():
     return render_template('index.html')
 

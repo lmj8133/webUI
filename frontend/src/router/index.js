@@ -15,11 +15,11 @@ const router = createRouter({
           name: 'ConfigHeader',
           component: () => import('@/views/ConfigHeader.vue'),
         },
-        {
-          path: 'header',
-          name: 'Header',
-          component: () => import('@/views/Header.vue'),
-        }
+        // {
+        //   path: 'header',
+        //   name: 'Header',
+        //   component: () => import('@/views/Header.vue'),
+        // }
       ]
     },
   ]
