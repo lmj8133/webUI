@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import "./plugins/bootstrap-vue"
+import "./plugins/vue-sidebar-menu"
 
 Vue.config.productionTip = false
 

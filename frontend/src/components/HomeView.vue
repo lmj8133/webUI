@@ -1,45 +1,68 @@
 <template>
   <div class="home">
     <Topbar />
-    <Sidebar />
-    <b-container>
-      <form :id="upload_form_id"></form>
-      <file-input
-        :required="true"
-        accept=".h"
-        :form="upload_form_id"
-        class="mb-3"
-        @file-changed="file => fileChanged(file)"
-      ></file-input>
-      <b-spinner
-        class="mt-3"
-        variant="secondary"
-        label="Loading..."
-        v-if="!datas"
-      ></b-spinner>
-      <b-container class="mb-3 px-0" v-for="data in datas" :key="data.id">
-        <Dropdown
-          :data="data"
-          :value="
-            new_value[data.title] == undefined
-              ? new_value[data.title]
-              : old_value[data.id]
-          "
-          :disabled="dependencyCheck(data)"
-          v-if="data.widget_type == 'dropdown'"
-          @value-changed="(title, new_value) => valueChanged(title, new_value)"
-        />
-        <checkbox
-          :data="data"
-          :value="new_value[data.title] || old_value[data.id]"
-          :disabled="old_value[data.dependency] || false"
-          v-if="data.widget_type == 'checkbox'"
-          @value-changed="(title, new_value) => valueChanged(title, new_value)"
-        />
+    <b-container fluid="lg" class="px-0">
+      <!-- <Sidebar /> -->
+      <b-container>
+        <form :id="upload_form_id"></form>
+        <FileInput
+          :required="true"
+          accept=".h"
+          :form="upload_form_id"
+          class="mb-3"
+          @file-changed="file => fileChanged(file)"
+        ></FileInput>
+        <b-spinner
+          class="mt-3"
+          variant="secondary"
+          label="Loading..."
+          v-if="!datas"
+        ></b-spinner>
+        <b-container class="mb-3 px-0" v-for="data in datas" :key="data.id">
+          <Dropdown
+            :data="data"
+            :value="
+              new_value[data.title] == undefined
+                ? new_value[data.title]
+                : old_value[data.id]
+            "
+            :disabled="dependencyCheck(data)"
+            v-if="data.widget_type == 'dropdown'"
+            @value-changed="
+              (title, new_value) => valueChanged(title, new_value)
+            "
+          />
+          <checkbox
+            :data="data"
+            :value="new_value[data.title] || old_value[data.id]"
+            :disabled="old_value[data.dependency] || false"
+            v-if="data.widget_type == 'checkbox'"
+            @value-changed="
+              (title, new_value) => valueChanged(title, new_value)
+            "
+          />
+        </b-container>
+        <b-container>
+          <b-button
+            class="mt-3"
+            id="comfirm-btn"
+            variant="success"
+            size="lg"
+            @click="comfirm()"
+            >Comfrim</b-button
+          >
+        </b-container>
+        <b-modal id="no-file-alert" hide-footer title="No file uploaded">
+          <div class="text-center">
+            Please upload a file
+          </div></b-modal
+        >
+        <b-modal id="no-change-alert" hide-footer title="">
+          <div class="text-center">
+            Value not changed
+          </div></b-modal
+        >
       </b-container>
-      <b-button id="comfirm-btn" variant="success" size="lg" @click="comfirm()"
-        >Comfrim</b-button
-      >
     </b-container>
   </div>
 </template>
@@ -130,8 +153,12 @@ export default {
       this.file_name = file.name;
     },
     comfirm() {
+      if (this.file_name == "") {
+        this.$bvModal.show("no-file-alert");
+        return;
+      }
       if (Object.keys(this.new_value).length == 0) {
-        alert("No change");
+        this.$bvModal.show("no-change-alert");
         return;
       }
       var url = "/download";
