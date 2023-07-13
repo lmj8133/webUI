@@ -1,6 +1,7 @@
 <template>
   <div>
-    <b-form-file
+    <CFormInput type="file" id="formFile" />
+    <!-- <b-form-file
       v-model="file"
       :state="Boolean(file)"
       placeholder="Choose a file or drop it here...   "
@@ -9,12 +10,14 @@
       :accept="accept"
       :form="form"
       @change="$emit('file-changed', $event.target.files[0])"
-    ></b-form-file>
+    ></b-form-file> -->
   </div>
 </template>
 
 <script>
+import { CFormInput } from "@coreui/vue";
 export default {
+  components: { CFormInput },
   name: "FileInput",
   emits: ["file-changed"],
   props: {

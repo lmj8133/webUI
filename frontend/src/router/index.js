@@ -1,15 +1,37 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import HomeView from '@/components/HomeView'
+import { createRouter, createWebHistory } from 'vue-router'
+import DefaultLayout from '@/layouts/DefaultLayout.vue'
 
-Vue.use(Router)
-
-export default new Router({
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'HomeView',
-      component: HomeView
-    }
+      name: 'Home',
+      component: DefaultLayout,
+      redirect: '/configheader',
+      children: [
+        {
+          path: '/configheader',
+          name: 'ConfigHeader',
+          component: () => import('@/views/ConfigHeader.vue'),
+        },
+      ]
+    },
+
+    // {
+    //   path: '/',
+    //   name: 'home',
+    //   component: HomeView
+    // },
+    // {
+    //   path: '/about',
+    //   name: 'about',
+    //   // route level code-splitting
+    //   // this generates a separate chunk (About.[hash].js) for this route
+    //   // which is lazy-loaded when the route is visited.
+    //   component: () => import('../views/AboutView.vue')
+    // }
   ]
 })
+
+export default router

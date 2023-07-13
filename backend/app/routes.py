@@ -13,6 +13,10 @@ from flask import jsonify, render_template, request, send_from_directory
 def index():
     return render_template('index.html')
 
+# @app.route('/assets/<path:path>')
+# def send_assets(path):
+#     return send_from_directory('assets', path)
+
 @app.route('/api', methods=['GET'])
 def data():
     file = request.args.get('file')

@@ -1,43 +1,94 @@
 <template>
-  <CSidebar visible>
-    <CSidebarBrand>Sidebar Brand</CSidebarBrand>
+  <!-- <CSidebar
+    position="fixed"
+    :unfoldable="sidebarUnfoldable"
+    :visible="sidebarVisible"
+    @visible-change="
+      (event) =>
+        $store.commit({
+          type: 'updateSidebarVisible',
+          value: event,
+        })
+    "
+  >
+    <CSidebarBrand>
+      Algoltek
+    </CSidebarBrand>
+    <AppSidebarNav />
+    <CSidebarToggler
+      class="d-none d-lg-flex"
+      @click="$store.commit('toggleUnfoldable')"
+    />
+  </CSidebar> -->
+  <CSidebar
+    position="fixed"
+    :unfoldable="sidebarUnfoldable"
+    :visible="sidebarVisible"
+    @visible-change="
+      (event) =>
+        $store.commit({
+          type: 'updateSidebarVisible',
+          value: event,
+        })
+    "
+  >
+    <CSidebarBrand>Algoltek</CSidebarBrand>
     <CSidebarNav>
       <li class="nav-title">Nav Title</li>
       <CNavItem href="#">
-        <CIcon customClassName="nav-icon" icon="cil-speedometer" />
         Nav item
       </CNavItem>
       <CNavItem href="#">
-        <CIcon customClassName="nav-icon" icon="cil-speedometer" />
         With badge
         <CBadge color="primary ms-auto">NEW</CBadge>
       </CNavItem>
       <CNavGroup>
-        <template #togglerContent>
-          <CIcon customClassName="nav-icon" icon="cil-puzzle" /> Nav dropdown
-        </template>
+        <template #togglerContent> </template>
         <CNavItem href="#">
-          <CIcon customClassName="nav-icon" icon="cil-puzzle" /> Nav dropdown
           item
         </CNavItem>
         <CNavItem href="#">
-          <CIcon customClassName="nav-icon" icon="cil-puzzle" /> Nav dropdown
           item
         </CNavItem>
       </CNavGroup>
     </CSidebarNav>
-    <CSidebarToggler />
+    <CSidebarToggler
+      class="d-none d-lg-flex"
+      @click="$store.commit('toggleUnfoldable')"
+    />
   </CSidebar>
 </template>
 
 <script>
-import { CSidebar } from "@coreui";
+import {
+  CSidebar,
+  CSidebarBrand,
+  CSidebarToggler,
+  CSidebarNav,
+  CNavGroup,
+  CNavItem,
+  CBadge,
+} from "@coreui/vue";
+import { computed } from 'vue'
+import { useStore } from "vuex";
+
 export default {
-  name: "Sidebar",
   components: {
-    CSidebar
-  }
+    CSidebar,
+    CSidebarBrand,
+    CSidebarToggler,
+    CNavGroup,
+    CSidebarNav,
+    CNavItem,
+    CBadge,
+  },
+  name: "Sidebar",
+  setup() {
+    const store = useStore();
+    return {
+      sidebarUnfoldable: computed(() => store.state.sidebarUnfoldable),
+      sidebarVisible: computed(() => store.state.sidebarVisible),
+    };
+  },
 };
 </script>
-
-<style></style>

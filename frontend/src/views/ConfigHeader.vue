@@ -1,9 +1,14 @@
 <template>
-  <div class="home">
-    <Topbar />
-    <b-container fluid="lg" class="px-0">
-      <!-- <Sidebar /> -->
-      <b-container>
+  <div class="home body flex-grow-1 px-3">
+    <FileInput></FileInput>
+    <div class="text-center">
+      <CSpinner class="mt-3" color="secondary" v-if="!datas"></CSpinner>
+    </div>
+  </div>
+  <!-- <Topbar />
+    <CContainer fluid="lg" class="px-0">
+      <Sidebar />
+      <CContainer>
         <form :id="upload_form_id"></form>
         <FileInput
           :required="true"
@@ -12,13 +17,13 @@
           class="mb-3"
           @file-changed="file => fileChanged(file)"
         ></FileInput>
-        <b-spinner
+        <CSpinner
           class="mt-3"
           variant="secondary"
           label="Loading..."
           v-if="!datas"
-        ></b-spinner>
-        <b-container class="mb-3 px-0" v-for="data in datas" :key="data.id">
+        ></CSpinner>
+        <CContainer class="mb-3 px-0" v-for="data in datas" :key="data.id">
           <Dropdown
             :data="data"
             :value="
@@ -41,49 +46,55 @@
               (title, new_value) => valueChanged(title, new_value)
             "
           />
-        </b-container>
-        <b-container>
-          <b-button
+        </CContainer>
+        <CContainer>
+          <CButton
             class="mt-3"
             id="comfirm-btn"
             variant="success"
             size="lg"
             @click="comfirm()"
-            >Comfrim</b-button
+            >Comfrim</CButton
           >
-        </b-container>
-        <b-modal id="no-file-alert" hide-footer title="No file uploaded">
+        </CContainer>
+        <CModal id="no-file-alert" hide-footer title="No file uploaded">
           <div class="text-center">
             Please upload a file
-          </div></b-modal
+          </div></CModal
         >
-        <b-modal id="no-change-alert" hide-footer title="">
+        <CModal id="no-change-alert" hide-footer title="">
           <div class="text-center">
             Value not changed
-          </div></b-modal
+          </div></CModal
         >
-      </b-container>
-    </b-container>
-  </div>
+      </CContainer>
+    </CContainer> -->
 </template>
 
 <script>
 import axios from "axios";
-import Topbar from "./Topbar.vue";
-import Sidebar from "./Sidebar.vue";
-import FileInput from "./FileInput.vue";
-import Dropdown from "./Dropdown.vue";
-import Checkbox from "./Checkbox.vue";
+import FileInput from "@/components/FileInput.vue";
+import Dropdown from "@/components/Dropdown.vue";
+import Checkbox from "@/components/Checkbox.vue";
+import { CContainer, CSpinner, CButton, CModal } from "@coreui/vue";
 export default {
-  components: { Topbar, Sidebar, FileInput, Dropdown, Checkbox },
-  name: "HomeView",
+  components: {
+    FileInput,
+    Dropdown,
+    Checkbox,
+    CContainer,
+    CSpinner,
+    CButton,
+    CModal,
+  },
+  name: "ConfigHeader",
   mounted() {
     var url = "/api?file=data.json";
     if (process.env.NODE_ENV === "development") {
       // url = "http://localhost:5000/api?file=data.json";
     }
     url = url + "&timestamp=" + new Date().getTime();
-    axios.get(url).then(response => {
+    axios.get(url).then((response) => {
       console.log(response.data);
       if (response.data.status != "success") {
         console.log(response.data);
@@ -100,13 +111,13 @@ export default {
       old_value: {},
       new_value: {},
       uuid: "",
-      file_name: ""
+      file_name: "",
     };
   },
   computed: {
     return_value() {
       return this.old_value;
-    }
+    },
   },
   methods: {
     dependencyCheck(data) {
@@ -141,7 +152,7 @@ export default {
           { file: file },
           { headers: { "Content-Type": "multipart/form-data" } }
         )
-        .then(response => {
+        .then((response) => {
           let datas = response.data.data;
           if (response.data.status != "success") {
             console.log(response.data);
@@ -167,11 +178,11 @@ export default {
           url,
           {
             uuid: this.uuid,
-            change: this.new_value
+            change: this.new_value,
           },
           { responseType: "blob" }
         )
-        .then(response => {
+        .then((response) => {
           const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement("a");
           link.href = url;
@@ -179,10 +190,9 @@ export default {
           document.body.appendChild(link);
           link.click();
         });
-    }
-  }
+    },
+  },
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped></style>

@@ -1,5 +1,5 @@
 <template>
-  <b-input-group class="checkbox">
+  <CInputGroup class="checkbox">
     <b-input-group-prepend class="flex-grow-1">
       <label
         class="input-group-text w-100 mr-auto"
@@ -32,7 +32,7 @@
         </span>
       </b-dropdown>
     </b-input-group-append>
-  </b-input-group>
+  </CInputGroup>
 </template>
 
 <script>
