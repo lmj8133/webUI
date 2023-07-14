@@ -1,8 +1,12 @@
 <template>
   <div class="home body flex-grow-1 px-3">
     <CContainer>
-      <form :id="upload_form_id"></form>
-      <FileInput></FileInput>
+      <form :id="uploadFormID"></form>
+      <FileInput
+        :accept="file_name"
+        :form="uploadFormID"
+        @file-changed="fileChanged"
+      ></FileInput>
       <div class="text-center">
         <CSpinner class="mt-3" color="secondary" v-if="!datas"></CSpinner>
       </div>
@@ -16,106 +20,28 @@
           "
           :disabled="dependencyCheck(data)"
           v-if="data.widget_type == 'dropdown'"
-          @value-changed="
-            (title, new_value) => valueChanged(title, new_value)
-          "
+          @value-changed="(title, new_value) => valueChanged(title, new_value)"
         />
         <checkbox
           :data="data"
-          :value="new_value[data.title] || old_value[data.id]"
-          :disabled="old_value[data.dependency] || false"
-          v-if="data.widget_type == 'checkbox'"
-          @value-changed="
-            (title, new_value) => valueChanged(title, new_value)
+          :value="
+            new_value[data.title] == undefined
+              ? new_value[data.title]
+              : old_value[data.id]
           "
+          :disabled="dependencyCheck(data) || false"
+          v-if="data.widget_type == 'checkbox'"
+          @value-changed="(title, new_value) => valueChanged(title, new_value)"
         />
       </CContainer>
-      <CContainer>
-        <CButton
-          class="mt-3"
-          id="comfirm-btn"
-          variant="success"
-          size="lg"
-          @click="comfirm()"
-          >Comfrim</CButton
-        >
-      </CContainer>
       <CModal id="no-file-alert" hide-footer title="No file uploaded">
-        <div class="text-center">
-          Please upload a file
-        </div></CModal
+        <div class="text-center">Please upload a file</div></CModal
       >
       <CModal id="no-change-alert" hide-footer title="">
-        <div class="text-center">
-          Value not changed
-        </div></CModal
+        <div class="text-center">Value not changed</div></CModal
       >
     </CContainer>
   </div>
-  <!-- <Topbar />
-    <CContainer fluid="lg" class="px-0">
-      <Sidebar />
-      <CContainer>
-        <form :id="upload_form_id"></form>
-        <FileInput
-          :required="true"
-          accept=".h"
-          :form="upload_form_id"
-          class="mb-3"
-          @file-changed="file => fileChanged(file)"
-        ></FileInput>
-        <CSpinner
-          class="mt-3"
-          variant="secondary"
-          label="Loading..."
-          v-if="!datas"
-        ></CSpinner>
-        <CContainer class="mb-3 px-0" v-for="data in datas" :key="data.id">
-          <Dropdown
-            :data="data"
-            :value="
-              new_value[data.title] == undefined
-                ? new_value[data.title]
-                : old_value[data.id]
-            "
-            :disabled="dependencyCheck(data)"
-            v-if="data.widget_type == 'dropdown'"
-            @value-changed="
-              (title, new_value) => valueChanged(title, new_value)
-            "
-          />
-          <checkbox
-            :data="data"
-            :value="new_value[data.title] || old_value[data.id]"
-            :disabled="old_value[data.dependency] || false"
-            v-if="data.widget_type == 'checkbox'"
-            @value-changed="
-              (title, new_value) => valueChanged(title, new_value)
-            "
-          />
-        </CContainer>
-        <CContainer>
-          <CButton
-            class="mt-3"
-            id="comfirm-btn"
-            variant="success"
-            size="lg"
-            @click="comfirm()"
-            >Comfrim</CButton
-          >
-        </CContainer>
-        <CModal id="no-file-alert" hide-footer title="No file uploaded">
-          <div class="text-center">
-            Please upload a file
-          </div></CModal
-        >
-        <CModal id="no-change-alert" hide-footer title="">
-          <div class="text-center">
-            Value not changed
-          </div></CModal
-        >
-      </CContainer>
-    </CContainer> -->
 </template>
 
 <script>
@@ -124,6 +50,10 @@ import FileInput from "@/components/FileInput.vue";
 import Dropdown from "@/components/Dropdown.vue";
 import Checkbox from "@/components/Checkbox.vue";
 import { CContainer, CSpinner, CButton, CModal } from "@coreui/vue";
+import { useStore } from "vuex";
+import { computed } from "vue";
+import store from "../store";
+
 export default {
   components: {
     FileInput,
@@ -135,6 +65,13 @@ export default {
     CModal,
   },
   name: "ConfigHeader",
+  setup() {
+    const store = useStore();
+    return {
+      uploadFormID: store.state.uploadFormID,
+      datas: computed(() => store.state.headerData),
+    };
+  },
   mounted() {
     var url = "/api?file=data.json";
     if (process.env.NODE_ENV === "development") {
@@ -149,12 +86,11 @@ export default {
       }
       this.datas = response.data.data;
     });
+
+    // store.dispatch("updateHeaderData", response.data.data);
   },
   data() {
     return {
-      msg: "Welcome",
-      datas: this.datas,
-      upload_form_id: "upload_form_id",
       old_value: {},
       new_value: {},
       uuid: "",
@@ -177,7 +113,6 @@ export default {
       return this.old_value[data.dependency];
     },
     valueChanged(title, new_value) {
-      console.log(this.new_value);
       if (
         this.old_value[title] != undefined &&
         new_value == this.old_value[title]
@@ -212,11 +147,11 @@ export default {
     },
     comfirm() {
       if (this.file_name == "") {
-        this.$bvModal.show("no-file-alert");
+        // this.$bvModal.show("no-file-alert");
         return;
       }
       if (Object.keys(this.new_value).length == 0) {
-        this.$bvModal.show("no-change-alert");
+        // this.$bvModal.show("no-change-alert");
         return;
       }
       var url = "/download";

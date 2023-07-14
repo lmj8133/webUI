@@ -2,7 +2,6 @@
   <CHeader position="sticky" class="mb-4">
     <CContainer fluid>
       <CHeaderToggler class="ps-1" @click="$store.commit('toggleSidebar')">
-        <!-- <CImage src="@/assets/icon.ico" /> -->
         <CIcon :icon="cilHamburgerMenu" size="lg" />
       </CHeaderToggler>
       <CHeaderBrand class="mx-auto d-lg-none" to="#"
@@ -16,6 +15,7 @@
           <CNavLink href="/boardheader" class="me-2">board.h</CNavLink>
         </CNavItem>
       </CHeaderNav>
+      <CButton color="success" type="summit" @click="$store.dispatch('confirm')" >Confirm</CButton>
     </CContainer>
   </CHeader>
 </template>
@@ -30,9 +30,11 @@ import {
   CNavLink,
   CHeaderDivider,
   CContainer,
+  CButton
 } from "@coreui/vue";
 import { CIcon } from "@coreui/icons-vue";
 import { cilHamburgerMenu } from "@coreui/icons";
+import { useStore } from "vuex";
 
 export default {
   components: {
@@ -45,12 +47,14 @@ export default {
     CHeaderDivider,
     CContainer,
     CIcon,
-  },
+    CButton
+},
   name: "Topbar",
   data() {
     return {};
   },
   setup() {
+    const store = useStore();
     return {
       cilHamburgerMenu,
     };

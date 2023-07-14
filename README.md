@@ -50,3 +50,11 @@ requirements:
 ```bash
 ./run_me
 ```
+
+## clean
+
+you will need to run setup again after cleaning
+
+```bash
+./clean
+```

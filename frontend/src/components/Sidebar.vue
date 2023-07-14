@@ -12,14 +12,13 @@
     "
   >
     <CSidebarBrand>
-      <!-- <CImage src="/assets/favicon.ico" width="30" height="30" />
-      Algoltek -->
-      <CIcon :icon="logoNegative" :height="35" />
-      <CIcon :icon="sygnet" :height="35" />
+      <a href="https://www.algoltek.com.tw/">
+        <CImage src="/assets/favicon.ico" width="35" height="35"> </CImage>
+      </a>
     </CSidebarBrand>
     <CSidebarNav>
       <li class="nav-title">Nav Title</li>
-      <CNavItem href="#"> Nav item </CNavItem>
+      <!-- <CNavItem href="#"> Nav item </CNavItem>
       <CNavItem href="#">
         With badge
         <CBadge color="primary ms-auto">NEW</CBadge>
@@ -28,7 +27,7 @@
         <template #togglerContent> </template>
         <CNavItem href="#"> item </CNavItem>
         <CNavItem href="#"> item </CNavItem>
-      </CNavGroup>
+      </CNavGroup> -->
     </CSidebarNav>
     <CSidebarToggler
       class="d-none d-lg-flex"
@@ -49,8 +48,6 @@ import {
   CImage,
 } from "@coreui/vue";
 import { CIcon } from "@coreui/icons-vue";
-import { logoNegative } from '@/assets/brand/logo-negative'
-import { sygnet } from '@/assets/brand/sygnet'
 
 import { computed } from "vue";
 import { useStore } from "vuex";
@@ -65,7 +62,6 @@ export default {
     CNavItem,
     CBadge,
     CImage,
-    CIcon,
   },
   name: "Sidebar",
   setup() {
@@ -73,9 +69,13 @@ export default {
     return {
       sidebarUnfoldable: computed(() => store.state.sidebarUnfoldable),
       sidebarVisible: computed(() => store.state.sidebarVisible),
-      logoNegative,
-      sygnet,
     };
   },
 };
 </script>
+
+<style scoped>
+a {
+  background-color: initial;
+}
+</style>
