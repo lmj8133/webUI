@@ -1,57 +1,81 @@
 <template>
-  <b-input-group class="checkbox">
-    <b-input-group-prepend class="flex-grow-1">
-      <label
-        class="input-group-text w-100 mr-auto"
-        :for="data.result.id + '__BV_toggle_'"
-      >
+  <CInputGroup class="mb-3">
+    <CInputGroupText class="flex-grow-1 text-start">
+      <CFormLabel class="w-100 me-auto my-0" :for="data.result.id">
         {{ data.title }}
-      </label>
-    </b-input-group-prepend>
-    <b-input-group-append class="input-group-append" :id="data.id">
-      <b-dropdown
+      </CFormLabel>
+    </CInputGroupText>
+    <CDropdown alignment="end" variant="input-group">
+      <CDropdownToggle
+        color="secondary"
+        variant="outline"
         :id="data.result.id"
-        :text="value == undefined ? value : data.result.default_text"
-        dropright
-        variant="outline-secondary"
+        :type="data.result.type"
         :disabled="disabled"
+        >{{ value ? value : data.result.default_text }}</CDropdownToggle
       >
-        <span v-for="content in data.content" :key="content.id">
-          <b-dropdown-item
-            href="#"
-            :id="content.id"
-            :value="content.value"
-            @click="$emit('value-changed', data.title, content.value)"
-            >{{ content.value }}</b-dropdown-item
-          >
-          <b-tooltip :target="content.id" triggers="hover">
-            <div class="text-left">
-              {{ tooltip(content) }}
-            </div>
-          </b-tooltip>
-        </span>
-      </b-dropdown>
-    </b-input-group-append>
-  </b-input-group>
+      <CDropdownMenu>
+        <CTooltip
+          v-for="content in data.content"
+          :key="content.id"
+          :content="tooltip(content)"
+          placement="right"
+          :fallback-placements="['left']"
+          :delay="{'show': 0, 'hide': 0}"
+          :trigger="['hover']"
+        >
+          <template #toggler="{ on }">
+            <CDropdownItem
+              :id="content.id"
+              :value="content.value"
+              v-on="on"
+              @click="$emit('value-changed', data.title, content.value)"
+              >{{ content.value }}</CDropdownItem
+            >
+          </template>
+        </CTooltip>
+      </CDropdownMenu>
+    </CDropdown>
+  </CInputGroup>
 </template>
 
 <script>
+import {
+  CInputGroup,
+  CInputGroupText,
+  CFormLabel,
+  CDropdown,
+  CDropdownToggle,
+  CDropdownMenu,
+  CDropdownItem,
+  CTooltip,
+} from "@coreui/vue";
 export default {
   name: "Dropdown",
+  components: {
+    CInputGroup,
+    CInputGroupText,
+    CFormLabel,
+    CDropdown,
+    CDropdownToggle,
+    CDropdownMenu,
+    CDropdownItem,
+    CTooltip,
+  },
   emits: ["value-changed"],
   props: {
     data: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     value: {
       type: String || Number || Boolean,
-      default: null
+      default: null,
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {};
@@ -68,8 +92,8 @@ export default {
         tip_str += tip + ": " + content[tip] + "\r\n";
       }
       return tip_str;
-    }
-  }
+    },
+  },
 };
 </script>
 

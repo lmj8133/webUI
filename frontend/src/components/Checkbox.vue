@@ -1,5 +1,5 @@
-<template>
-  <b-input-group class="checkbox">
+<!-- <template>
+  <CInputGroup class="checkbox">
     <b-input-group-prepend class="flex-grow-1">
       <label class="input-group-text w-100 mr-auto" :for="data.id">
         {{ data.title }}
@@ -22,30 +22,61 @@
         </b-tooltip>
       </div>
     </b-input-group-append>
-  </b-input-group>
+  </CInputGroup>
+</template> -->
+<template>
+  <CInputGroup class="mb-3">
+    <CInputGroupText class="flex-grow-1 text-start">
+      <CFormLabel class="w-100 me-auto my-0" :for="data.id">
+        {{ data.title }}
+      </CFormLabel>
+    </CInputGroupText>
+    <CInputGroupText>
+      <CFormCheck
+        type="checkbox"
+        :id="data.id"
+        color="secondary"
+        aria-label="Checkbox for following text input"
+      />
+    </CInputGroupText>
+  </CInputGroup>
 </template>
 
 <script>
+import {
+  CInputGroup,
+  CInputGroupText,
+  CFormLabel,
+  CFormCheck,
+  CTooltip,
+} from "@coreui/vue";
 export default {
   name: "Checkbox",
+  components: {
+    CInputGroup,
+    CInputGroupText,
+    CFormLabel,
+    CFormCheck,
+    CTooltip,
+  },
   props: {
     data: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     value: {
       type: String || Number || Boolean,
-      default: null
+      default: null,
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ["value-changed"],
   data() {
     return {
-      new_value: this.value
+      new_value: this.value,
     };
   },
   methods: {
@@ -61,9 +92,17 @@ export default {
       }
 
       return tip_str;
-    }
-  }
+    },
+  },
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.form-check-input:checked {
+  --cui-form-check-input-checked-bg-color: var(--cui-gray-500);
+  --cui-form-check-input-checked-border-color: var(--cui-gray-500);
+}
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.25rem rgba(58, 58, 58, 0.25);
+}
+</style>

@@ -1,20 +1,22 @@
 <template>
   <div>
-    <b-form-file
-      v-model="file"
-      :state="Boolean(file)"
-      placeholder="Choose a file or drop it here...   "
-      drop-placeholder="Drop file here..."
-      :required="required"
-      :accept="accept"
+    <CFormInput
+      type="file"
+      id="formFile"
+      class="mb-3"
       :form="form"
-      @change="$emit('file-changed', $event.target.files[0])"
-    ></b-form-file>
+      :valid="valid ? true : false"
+      @change="$store.dispatch('updateHeaderFile', $event.target.files[0])"
+    />
   </div>
 </template>
 
 <script>
+import { CFormInput } from "@coreui/vue";
+import { useStore } from "vuex";
+
 export default {
+  components: { CFormInput },
   name: "FileInput",
   emits: ["file-changed"],
   props: {
@@ -22,14 +24,17 @@ export default {
       type: Boolean,
       default: false,
     },
-    accept: {
-      type: String,
+    valid: {
+      type: String || Boolean,
       default: "",
     },
     form: {
       type: String,
       default: "",
     },
+  },
+  setup() {
+    const store = useStore();
   },
   data() {
     return {
