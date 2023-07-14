@@ -26,10 +26,27 @@ sudo apt-get install npm
 ./setup.sh
 ``` -->
 
-### install python3.8 and nodejs
+### install python and nodejs
+
+requirements:
+
+- python3.8
+- node.js
 
 ### virtual environment setup
 
 ```bash
 ./setup
+```
+
+## build
+
+```bash
+./build
+```
+
+## run
+
+```bash
+./run_me
 ```
