@@ -3,8 +3,7 @@
 //   CNavbar
 // } from '@coreui/vue'
 import CoreuiVue from '@coreui/vue'
-
-import '@coreui/coreui/dist/css/coreui.min.css'
+import CIcon from '@coreui/icons-vue'
 
 export default {
   // install: (app) => {
@@ -13,5 +12,6 @@ export default {
   // }
   install: (app) => {
     app.use(CoreuiVue)
+    app.component('CIcon', CIcon)
   }
 }

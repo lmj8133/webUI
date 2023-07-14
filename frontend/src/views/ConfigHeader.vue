@@ -1,9 +1,56 @@
 <template>
   <div class="home body flex-grow-1 px-3">
-    <FileInput></FileInput>
-    <div class="text-center">
-      <CSpinner class="mt-3" color="secondary" v-if="!datas"></CSpinner>
-    </div>
+    <CContainer>
+      <form :id="upload_form_id"></form>
+      <FileInput></FileInput>
+      <div class="text-center">
+        <CSpinner class="mt-3" color="secondary" v-if="!datas"></CSpinner>
+      </div>
+      <CContainer class="mb-3 px-0" v-for="data in datas" :key="data.id">
+        <Dropdown
+          :data="data"
+          :value="
+            new_value[data.title] == undefined
+              ? new_value[data.title]
+              : old_value[data.id]
+          "
+          :disabled="dependencyCheck(data)"
+          v-if="data.widget_type == 'dropdown'"
+          @value-changed="
+            (title, new_value) => valueChanged(title, new_value)
+          "
+        />
+        <checkbox
+          :data="data"
+          :value="new_value[data.title] || old_value[data.id]"
+          :disabled="old_value[data.dependency] || false"
+          v-if="data.widget_type == 'checkbox'"
+          @value-changed="
+            (title, new_value) => valueChanged(title, new_value)
+          "
+        />
+      </CContainer>
+      <CContainer>
+        <CButton
+          class="mt-3"
+          id="comfirm-btn"
+          variant="success"
+          size="lg"
+          @click="comfirm()"
+          >Comfrim</CButton
+        >
+      </CContainer>
+      <CModal id="no-file-alert" hide-footer title="No file uploaded">
+        <div class="text-center">
+          Please upload a file
+        </div></CModal
+      >
+      <CModal id="no-change-alert" hide-footer title="">
+        <div class="text-center">
+          Value not changed
+        </div></CModal
+      >
+    </CContainer>
   </div>
   <!-- <Topbar />
     <CContainer fluid="lg" class="px-0">
