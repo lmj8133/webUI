@@ -704,4 +704,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# vscode folder settings
+.vscode/
+
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,node,vue,react,vs,webstorm

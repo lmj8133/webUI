@@ -1,5 +1,6 @@
 import json
 import os
+import signal
 import sys
 import uuid
 
@@ -13,13 +14,20 @@ from flask import jsonify, render_template, request, send_from_directory
 def index():
     return render_template('index.html')
 
-# @app.route('/assets/<path:path>')
-# def send_assets(path):
-#     return send_from_directory('assets', path)
 
 @app.route('/api', methods=['GET'])
 def data():
     file = request.args.get('file')
+
+    check = request.args.get('check')
+    if check:
+        if (os.path.exists(os.path.join('app', 'static', 'temp', file))):
+            data = {'status': 'success', 'data': {'message': 'File exists'}}
+        else:
+            data = {'status': 'error', 'data': {'message': 'File not found'}}
+        return jsonify(data)
+
+
     try:
         with open(os.path.join('app', 'static', file)) as f:
             data = json.load(f)
@@ -30,6 +38,7 @@ def data():
         print('Unexpected error:', sys.exc_info()[0])
         data = {'status': 'error'}
     return jsonify(data)
+
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -63,6 +72,7 @@ def upload():
         }
     })
 
+
 @app.route('/download', methods=['POST'])
 def download():
     data = request.get_json()
@@ -73,18 +83,45 @@ def download():
     with open(file_path.replace('.h', '.json')) as f:
         saved_data = json.load(f)
 
-    response = send_from_directory('', 'static/temp/' + file_uuid + '.h')
     change_data = header_change(saved_data, data['change'], file_path.replace('.json', '.h'))
     with open(file_path, 'w') as f:
         for line in change_data:
             f.write(line + '\n')
     try:
-        response = send_from_directory('', os.path.join('static', 'temp', file_uuid + '.h'))
-        print(response)
+        response = send_from_directory(os.path.join(os.getcwd(), 'app', 'static', 'temp'), file_uuid + '.h')
     except:
         print('Unexpected error:', sys.exc_info()[0])
-
-    # os.remove(file_path)
-    os.remove(file_path.replace('.h', '.json'))
+        response = jsonify({'status': 'error', 'data': {'message': 'File not found'}})
 
     return response
+
+
+@app.route('/clear', methods=['POST'])
+def clear():
+    data = request.get_json()
+    file_uuid = data['uuid']
+    file_path = os.path.join('app', 'static', 'temp', file_uuid + '.h')
+    file_path_json = os.path.join('app', 'static', 'temp', file_uuid + '.json')
+
+    if (os.path.exists(file_path)):
+        os.remove(file_path)
+    if (os.path.exists(file_path_json)):
+        os.remove(file_path_json)
+
+    return jsonify({'status': 'success', 'data': {'message': 'File deleted'}})
+
+
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
+
+@app.route('/shutdown', methods=['GET'])
+def shutdown():
+    try:
+        shutdown_server()
+    except:
+        os.kill(os.getpid(), signal.SIGINT)
+    return 'Server shutting down...'

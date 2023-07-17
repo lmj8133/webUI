@@ -3,17 +3,16 @@
     <CFormInput
       type="file"
       id="formFile"
-      class="mb-3"
-      :form="form"
+      class="mb-3 file-input"
+      :accept="accept"
       :valid="valid ? true : false"
-      @change="$store.dispatch('updateHeaderFile', $event.target.files[0])"
+      @change="$emit('file-changed', $event.target.files[0])"
     />
   </div>
 </template>
 
 <script>
 import { CFormInput } from "@coreui/vue";
-import { useStore } from "vuex";
 
 export default {
   components: { CFormInput },
@@ -24,17 +23,10 @@ export default {
       type: Boolean,
       default: false,
     },
-    valid: {
-      type: String || Boolean,
-      default: "",
-    },
-    form: {
+    accept: {
       type: String,
       default: "",
     },
-  },
-  setup() {
-    const store = useStore();
   },
   data() {
     return {
@@ -43,3 +35,10 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.file-input:focus {
+  --cui-input-focus-border-color: var(--cui-gray-500) !important;
+  box-shadow: 0 0 0 0.25rem rgba(58, 58, 58, 0.25) !important;
+}
+</style>
