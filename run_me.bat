@@ -33,3 +33,5 @@ IF %nostart% == 0 (
     START http://localhost:%port%
 )
 python -m flask run --host=%host% --port=%port%
+
+@DEL /Q /F .\app\static\temp
