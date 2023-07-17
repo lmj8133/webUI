@@ -29,6 +29,7 @@
         <CNavItem href="#"> item </CNavItem>
       </CNavGroup> -->
     </CSidebarNav>
+    <CButton color="danger mb-0" size="sm" @click="shutdown()">Exit</CButton>
     <CSidebarToggler
       class="d-none d-lg-flex"
       @click="$store.commit('toggleUnfoldable')"
@@ -46,11 +47,13 @@ import {
   CNavItem,
   CBadge,
   CImage,
+  CButton,
 } from "@coreui/vue";
 import { CIcon } from "@coreui/icons-vue";
 
 import { computed } from "vue";
 import { useStore } from "vuex";
+import axios from "axios";
 
 export default {
   components: {
@@ -62,6 +65,7 @@ export default {
     CNavItem,
     CBadge,
     CImage,
+    CButton,
   },
   name: "Sidebar",
   setup() {
@@ -70,6 +74,14 @@ export default {
       sidebarUnfoldable: computed(() => store.state.sidebarUnfoldable),
       sidebarVisible: computed(() => store.state.sidebarVisible),
     };
+  },
+  methods: {
+    shutdown() {
+      if (!confirm("Are you sure to exit?")) return;
+      axios.get("/shutdown");
+      window.href = "about:blank";
+      window.close();
+    },
   },
 };
 </script>

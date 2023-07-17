@@ -119,6 +119,7 @@ export default {
       // new_value: { "title1": "value1", "title2": "value2" },
       new_value: {},
       uuid: "",
+      file: undefined,
       file_name: "",
       toasts: [],
     };
@@ -150,9 +151,8 @@ export default {
         return;
       }
       this.new_value[title] = new_value;
-      console.log(this.new_value);
     },
-    fileChanged(file) {
+    fileChanged(file, event = null) {
       if (!file) {
         return;
       }
@@ -171,9 +171,16 @@ export default {
           }
           this.old_value = datas.value;
           this.uuid = datas.uuid;
+          this.file_name = file.name;
+          if (this.file != file) {
+            this.new_value = {};
+            this.createToast("File uploaded", file.name);
+            this.file = file;
+          }
+          if (event == "confirm") {
+            this.confirm();
+          }
         });
-      this.file_name = file.name;
-      this.createToast("File uploaded", file.name);
     },
     confirm() {
       if (!this.file_name) {
@@ -184,6 +191,19 @@ export default {
         this.createToast("No change", "Value not changed");
         return;
       }
+
+      // check file
+      var url = "/api?file=" + this.uuid + ".h&check=1";
+      axios.get(url).then((response) => {
+        if (response.data.status != "success") {
+          console.log(response.data);
+          this.fileChanged(this.file, "confirm");
+        } else {
+          this.download();
+        }
+      });
+    },
+    download() {
       var url = "/download";
       axios
         .post(
@@ -201,15 +221,18 @@ export default {
           link.setAttribute("download", this.file_name);
           document.body.appendChild(link);
           link.click();
+          axios.post("/clear", { uuid: this.uuid });
+        })
+        .catch((error) => {
+          console.log(error);
         });
     },
-    createToast(title, content, delay = 5000) {
+    createToast(title, content, delay = 4000) {
       this.toasts.push({
         title: title,
         content: content,
         delay: delay,
       });
-      console.log(this.toasts);
     },
   },
 };
