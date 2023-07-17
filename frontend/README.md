@@ -27,3 +27,39 @@ npm run dev
 ```sh
 npm run build
 ```
+
+## Src Structure
+
+```text
+src
+├── App.vue
+├── main.js
+│
+├── assets
+│
+├── components
+│   ├── Checkbox.vue
+│   ├── Dropdown.vue
+│   ├── FileInput.vue
+│   ├── Footer.vue
+│   ├── Header.vue
+│   └── Sidebar.vue
+│
+├── layouts
+│   └── DefaultLayout.vue
+│
+├── plugins
+│   └── coreui.js
+│
+├── router
+│   └── index.js
+│
+├── store
+│   └── index.js
+│
+├── styles
+│   └── ...
+│
+└── views
+    └── ConfigHeader.vue
+```
