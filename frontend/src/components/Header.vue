@@ -15,7 +15,7 @@
           <CNavLink href="/boardheader" class="me-2">board.h</CNavLink>
         </CNavItem>
       </CHeaderNav>
-      <CButton color="success" type="summit" @click="$store.dispatch('confirm')" >Confirm</CButton>
+      <CButton color="success" type="summit" @click="confirm()" >Confirm</CButton>
     </CContainer>
   </CHeader>
 </template>
@@ -59,6 +59,11 @@ export default {
       cilHamburgerMenu,
     };
   },
+  methods: {
+    confirm() {
+      this.$store.dispatch("confirm");
+    },
+  }
 };
 </script>
 
