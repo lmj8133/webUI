@@ -1,12 +1,7 @@
 <template>
   <div class="home body flex-grow-1 px-3">
     <CContainer>
-      <form :id="uploadFormID"></form>
-      <FileInput
-        :accept="file_name"
-        :form="uploadFormID"
-        @file-changed="fileChanged"
-      ></FileInput>
+      <FileInput accept=".h" @file-changed="fileChanged"></FileInput>
       <div class="text-center">
         <CSpinner class="mt-3" color="secondary" v-if="!datas"></CSpinner>
       </div>
@@ -14,32 +9,37 @@
         <Dropdown
           :data="data"
           :value="
-            new_value[data.title] == undefined
+            new_value[data.title] != undefined
               ? new_value[data.title]
               : old_value[data.id]
           "
-          :disabled="dependencyCheck(data)"
+          :disabled="dependencyCheck(data.dependency)"
           v-if="data.widget_type == 'dropdown'"
           @value-changed="(title, new_value) => valueChanged(title, new_value)"
         />
         <checkbox
           :data="data"
           :value="
-            new_value[data.title] == undefined
+            new_value[data.title] != undefined
               ? new_value[data.title]
               : old_value[data.id]
           "
-          :disabled="dependencyCheck(data) || false"
+          :disabled="dependencyCheck(data.dependency)"
           v-if="data.widget_type == 'checkbox'"
           @value-changed="(title, new_value) => valueChanged(title, new_value)"
         />
       </CContainer>
-      <CModal id="no-file-alert" hide-footer title="No file uploaded">
-        <div class="text-center">Please upload a file</div></CModal
-      >
-      <CModal id="no-change-alert" hide-footer title="">
-        <div class="text-center">Value not changed</div></CModal
-      >
+      <CToaster placement="bottom-end">
+        <CToast v-for="(toast, index) in toasts" :delay="toast.delay" visible>
+          <CToastHeader closeButton v-if="toast.title">
+            <span class="me-auto fw-bold">{{ toast.title }}</span>
+          </CToastHeader>
+          <CToastBody>
+            {{ toast.content }}
+          </CToastBody>
+          <CToastClose class="me-2 m-auto" v-if="!toast.title" />
+        </CToast>
+      </CToaster>
     </CContainer>
   </div>
 </template>
@@ -49,7 +49,17 @@ import axios from "axios";
 import FileInput from "@/components/FileInput.vue";
 import Dropdown from "@/components/Dropdown.vue";
 import Checkbox from "@/components/Checkbox.vue";
-import { CContainer, CSpinner, CButton, CModal } from "@coreui/vue";
+import {
+  CContainer,
+  CSpinner,
+  CButton,
+  CModal,
+  CToaster,
+  CToast,
+  CToastHeader,
+  CToastBody,
+  CToastClose,
+} from "@coreui/vue";
 import { useStore } from "vuex";
 import { computed } from "vue";
 import store from "../store";
@@ -63,71 +73,90 @@ export default {
     CSpinner,
     CButton,
     CModal,
+    CToaster,
+    CToast,
+    CToastHeader,
+    CToastBody,
+    CToastClose,
   },
   name: "ConfigHeader",
   setup() {
     const store = useStore();
-    return {
-      uploadFormID: store.state.uploadFormID,
-      datas: computed(() => store.state.headerData),
-    };
-  },
-  mounted() {
+
     var url = "/api?file=data.json";
-    if (process.env.NODE_ENV === "development") {
-      // url = "http://localhost:5000/api?file=data.json";
-    }
     url = url + "&timestamp=" + new Date().getTime();
     axios.get(url).then((response) => {
-      console.log(response.data);
       if (response.data.status != "success") {
         console.log(response.data);
-        return;
       }
-      this.datas = response.data.data;
+      var datas = response.data.data;
+      store.dispatch("updateHeaderData", datas);
+
+      var data_index = {};
+      for (var i in datas) {
+        data_index[datas[i].id] = {
+          title: datas[i].title,
+          index: i,
+        };
+        data_index[datas[i].title] = {
+          id: datas[i].id,
+          index: i,
+        };
+      }
+      store.dispatch("updateDataIndex", data_index);
     });
 
-    // store.dispatch("updateHeaderData", response.data.data);
+    return {
+      datas: computed(() => store.state.headerData),
+      data_index: computed(() => store.state.dataIndex),
+      is_confirm: computed(() => store.state.isConfirm),
+    };
   },
   data() {
     return {
+      // old_value: { "id1": "value1", "id2": "value2" },
       old_value: {},
+      // new_value: { "title1": "value1", "title2": "value2" },
       new_value: {},
       uuid: "",
       file_name: "",
+      toasts: [],
     };
   },
-  computed: {
-    return_value() {
-      return this.old_value;
+  watch: {
+    is_confirm: function (newVal, oldVal) {
+      if (newVal) {
+        this.confirm();
+      }
+      this.$store.dispatch("confirm", false);
     },
   },
   methods: {
-    dependencyCheck(data) {
-      if (!data.dependency) {
+    dependencyCheck(dependency) {
+      if (!dependency) {
         return false;
       }
-      if (this.new_value[data.dependency] != undefined) {
-        this;
+      if (this.new_value[this.data_index[dependency]["title"]] != undefined) {
+        return !this.new_value[this.data_index[dependency]["title"]];
       }
-      return this.old_value[data.dependency];
+      return !this.old_value[dependency];
     },
     valueChanged(title, new_value) {
       if (
-        this.old_value[title] != undefined &&
-        new_value == this.old_value[title]
+        this.old_value[this.data_index[title]["id"]] != undefined &&
+        new_value == this.old_value[this.data_index[title]["id"]]
       ) {
         delete this.new_value[title];
         return;
       }
       this.new_value[title] = new_value;
+      console.log(this.new_value);
     },
     fileChanged(file) {
-      console.log(file);
-      var url = "/upload";
-      if (process.env.NODE_ENV === "development") {
-        // url = "http://localhost:5000/upload";
+      if (!file) {
+        return;
       }
+      var url = "/upload";
       axios
         .post(
           url,
@@ -144,14 +173,15 @@ export default {
           this.uuid = datas.uuid;
         });
       this.file_name = file.name;
+      this.createToast("File uploaded", file.name);
     },
-    comfirm() {
-      if (this.file_name == "") {
-        // this.$bvModal.show("no-file-alert");
+    confirm() {
+      if (!this.file_name) {
+        this.createToast("No file uploaded", "Please upload a file");
         return;
       }
       if (Object.keys(this.new_value).length == 0) {
-        // this.$bvModal.show("no-change-alert");
+        this.createToast("No change", "Value not changed");
         return;
       }
       var url = "/download";
@@ -172,6 +202,14 @@ export default {
           document.body.appendChild(link);
           link.click();
         });
+    },
+    createToast(title, content, delay = 5000) {
+      this.toasts.push({
+        title: title,
+        content: content,
+        delay: delay,
+      });
+      console.log(this.toasts);
     },
   },
 };

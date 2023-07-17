@@ -5,23 +5,23 @@
         {{ data.title }}
       </CFormLabel>
     </CInputGroupText>
-    <CDropdown alignment="end" variant="input-group">
+    <CDropdown alignment="end" variant="input-group" :disabled="disabled">
       <CDropdownToggle
         color="secondary"
         variant="outline"
         :id="data.result.id"
-        :type="data.result.type"
         :disabled="disabled"
+        :type="data.result.type"
         >{{ value ? value : data.result.default_text }}</CDropdownToggle
       >
-      <CDropdownMenu>
+      <CDropdownMenu :disabled="disabled">
         <CTooltip
           v-for="content in data.content"
           :key="content.id"
           :content="tooltip(content)"
           placement="right"
           :fallback-placements="['left']"
-          :delay="{'show': 0, 'hide': 0}"
+          :delay="{ show: 0, hide: 0 }"
           :trigger="['hover']"
         >
           <template #toggler="{ on }">

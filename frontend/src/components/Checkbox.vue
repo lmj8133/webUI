@@ -1,29 +1,3 @@
-<!-- <template>
-  <CInputGroup class="checkbox">
-    <b-input-group-prepend class="flex-grow-1">
-      <label class="input-group-text w-100 mr-auto" :for="data.id">
-        {{ data.title }}
-      </label>
-    </b-input-group-prepend>
-    <b-input-group-append class="input-group-append">
-      <div class="input-group-text">
-        <input
-          type="checkbox"
-          :id="data.id"
-          :disabled="disabled"
-          v-model="new_value"
-          @input="$emit('value-changed', data.title, new_value)"
-          @change="$emit('value-changed', data.title, new_value)"
-        />
-        <b-tooltip :target="data.id" triggers="hover">
-          <div class="text-left">
-            {{ tooltip() }}
-          </div>
-        </b-tooltip>
-      </div>
-    </b-input-group-append>
-  </CInputGroup>
-</template> -->
 <template>
   <CInputGroup class="mb-3">
     <CInputGroupText class="flex-grow-1 text-start">
@@ -35,8 +9,13 @@
       <CFormCheck
         type="checkbox"
         :id="data.id"
+        :checked="value"
+        :disabled="disabled"
         color="secondary"
         aria-label="Checkbox for following text input"
+        @change="
+          $emit('value-changed', data.title, $event.target.checked)
+        "
       />
     </CInputGroupText>
   </CInputGroup>
@@ -65,7 +44,7 @@ export default {
       default: () => {},
     },
     value: {
-      type: String || Number || Boolean,
+      type: Boolean,
       default: null,
     },
     disabled: {
@@ -75,9 +54,7 @@ export default {
   },
   emits: ["value-changed"],
   data() {
-    return {
-      new_value: this.value,
-    };
+    return {};
   },
   methods: {
     tooltip() {
