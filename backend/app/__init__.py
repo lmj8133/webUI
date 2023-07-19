@@ -5,3 +5,9 @@ app = Flask(__name__,
             static_folder="../../frontend/dist/assets")
 
 from app import routes
+
+from app import socket
+
+import asyncio
+
+asyncio.run(socket.main())

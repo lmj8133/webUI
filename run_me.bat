@@ -3,6 +3,7 @@
 SET port=80
 SET host="localhost"
 SET nostart=0
+SET reload=""
 
 GOTO ARGS
 :ARGS
@@ -23,6 +24,9 @@ IF "%param%" == "--port" (
 IF "%param%" == "--nostart" (
     SET nostart=1
 )
+IF "%param%" == "--reload" (
+    SET reload="--reload"
+)
 GOTO ARGS
 :END
 
@@ -32,6 +36,7 @@ CALL "venv\Scripts\activate"
 IF %nostart% == 0 (
     START http://localhost:%port%
 )
-python -m flask run --host=%host% --port=%port%
+@REM SET FLASK_APP=main.py
+flask run --host %host% --port %port% %reload%
 
 @DEL /Q /F .\app\static\temp
