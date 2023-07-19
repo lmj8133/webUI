@@ -18,7 +18,7 @@ from sanic.response import HTTPResponse, file, json, text
 # 
 # The packaged server is production ready.
 # ref: https://sanic.dev/zh/guide/basics/app.html#%E5%AE%9E%E4%BE%8B-instance
-app = Sanic("MyHelloWorldApp")
+app = Sanic("HelloWorld")
 
 app.static('/','../frontend/dist/index.html', name='index')
 app.static('/configheader','../frontend/dist/index.html', name='configheader')
@@ -119,7 +119,12 @@ async def clear(request: Request) -> HTTPResponse:
 
     return json({'status': 'success', 'data': {'message': 'File deleted'}})
 
-@app.get('/shutdown')
-async def shutdown(request: Request) -> HTTPResponse:
-    os.kill(os.getpid(), signal.SIGTERM)
-    return json({'status': 'success', 'data': {'message': 'Server shutting down'}})
+# @app.get('/shutdown')
+# async def shutdown(request: Request) -> HTTPResponse:
+#     async def cleanup(app, _):
+#         import asyncio
+#         for task in asyncio.all_tasks():
+#             if task.get_name().startswith("signal"):
+#                 await task
+#     cleanup(app, None)
+#     return json({'status': 'success', 'data': {'message': 'Server shutting down'}})

@@ -3,7 +3,7 @@
 SET port=80
 SET host="localhost"
 SET nostart=0
-SET reload=""
+SET cargs=""
 
 GOTO ARGS
 :ARGS
@@ -16,16 +16,21 @@ SHIFT
 IF "%param%" == "--host" (
     SET host=%arg%
     SHIFT
+    GOTO ARGS
 )
 IF "%param%" == "--port" (
     SET port=%arg%
     SHIFT
+    GOTO ARGS
 )
 IF "%param%" == "--nostart" (
     SET nostart=1
+    GOTO ARGS
 )
-IF "%param%" == "--reload" (
-    SET reload="--reload"
+IF %cargs% == "" (
+    SET cargs=%param%
+) ELSE (
+    SET cargs=%cargs% %param%
 )
 GOTO ARGS
 :END
@@ -36,8 +41,16 @@ CALL "venv\Scripts\activate"
 IF %nostart% == 0 (
     START http://localhost:%port%
 )
-@REM SET FLASK_APP=main.py
-@REM flask run --host %host% --port %port% %reload%
-sanic server.app --host=%host% --port=%port% --fast
+
+IF %cargs% == "" (
+    sanic server.app --host=%host% --port=%port% --fast
+) ELSE (
+    sanic server.app --host=%host% --port=%port% --fast %cargs%
+)
+
+@REM Sanic will also perform fastest if you turn off access_log.
+@REM If you still require access logs, but want to enjoy this performance boost, consider using Nginx as a proxy, and letting that handle your access logging.
+@REM It will be much faster than anything Python can handle.
+@REM https://sanic.dev/en/guide/deployment/nginx.html#introduction
 
 @DEL /Q /F .\static\temp
