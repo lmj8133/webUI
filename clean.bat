@@ -24,6 +24,7 @@ GOTO CHECK
 :CLEAN
 IF "%clean%" NEQ "1" GOTO END
 @RD /Q /S backend\venv
+@RD /Q /S backend\__pycache__
 @DEL /Q /F backend\*.pyc
 @RD /Q /S frontend\dist
 

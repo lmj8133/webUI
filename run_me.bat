@@ -37,6 +37,7 @@ IF %nostart% == 0 (
     START http://localhost:%port%
 )
 @REM SET FLASK_APP=main.py
-flask run --host %host% --port %port% %reload%
+@REM flask run --host %host% --port %port% %reload%
+sanic server.app --host=%host% --port=%port% --fast
 
-@DEL /Q /F .\app\static\temp
+@DEL /Q /F .\static\temp
