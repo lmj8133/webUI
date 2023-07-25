@@ -33,13 +33,15 @@ requirements:
 - python3.8
 - node.js
 
-### virtual environment setup
+### environment setup
 
 ```bash
 ./setup
 ```
 
 ## build
+
+Will package the backend to the dist folder at the same time
 
 ```bash
 ./build
@@ -53,7 +55,7 @@ requirements:
 
 ## clean
 
-you will need to run setup again after cleaning
+You will need to run setup again after cleaning
 
 ```bash
 ./clean
