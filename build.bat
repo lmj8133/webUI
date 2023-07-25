@@ -1,4 +1,12 @@
 @ECHO OFF
 
 CD .\frontend
-npm run build
+CALL frontend_build.bat
+CD ..
+
+CD .\backend
+CALL backend_build.bat
+CD ..
+
+@MD .\dist
+@XCOPY .\backend\dist\server .\dist /Y /E

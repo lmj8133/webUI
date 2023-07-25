@@ -1,31 +1,42 @@
 import os
-import signal
 import sys
 import uuid
-from json import load, dump
+from json import dump, load
 
 import aiofiles
 from headerFileMaker import header_analyze, header_change
 from sanic import Sanic
 from sanic.request import Request
-from sanic.response import HTTPResponse, file, json, text
+from sanic.response import HTTPResponse, file, json, redirect
 
 # TIP
-# 
+#
 # This another important distinction.
 # Other frameworks come with a built in development server and explicitly say that it is only intended for development use.
 # The opposite is true with Sanic.
-# 
+#
 # The packaged server is production ready.
 # ref: https://sanic.dev/zh/guide/basics/app.html#%E5%AE%9E%E4%BE%8B-instance
 app = Sanic("HelloWorld")
 
-app.static('/','../frontend/dist/index.html', name='index')
-app.static('/configheader','../frontend/dist/index.html', name='configheader')
+@app.route('/')
+async def default(request: Request) -> HTTPResponse:
+    url = app.url_for('index', filename="configheader")
+    return redirect(url)
+
+@app.route('/<filename>')
+async def index(request: Request, filename: str) -> HTTPResponse:
+    if 'python.exe' in sys.executable:
+        return await file('../frontend/dist/index.html')
+    else:
+        return await file('./frontend/index.html')
 
 @app.route('/assets/<filename>')
 async def assets(request: Request, filename: str) -> HTTPResponse:
-    return await file(os.path.join('../frontend/dist/assets', filename))
+    if 'python.exe' in sys.executable:
+        return await file(os.path.join('../frontend/dist/assets', filename))
+    else:
+        return await file(os.path.join('./frontend/assets', filename))
 
 @app.get('/api')
 async def data(request: Request) -> HTTPResponse:
@@ -128,3 +139,11 @@ async def clear(request: Request) -> HTTPResponse:
 #                 await task
 #     cleanup(app, None)
 #     return json({'status': 'success', 'data': {'message': 'Server shutting down'}})
+
+if __name__ == '__main__':
+    if 'python.exe' in sys.executable:
+        print("\033[1;31;40myou should use sanic to run this server\033[0m")
+        app.run(host='localhost', port=80, access_log=False, fast=True, debug=False)
+    else:
+        os.system("start \"\" http://localhost")
+        app.run(host='localhost', port=80, access_log=False, debug=False, single_process=True)

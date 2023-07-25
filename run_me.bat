@@ -42,6 +42,7 @@ IF %nostart% == 0 (
     START http://localhost:%port%
 )
 
+SET SANIC_ACCESS_LOG=False
 IF %cargs% == "" (
     sanic server.app --host=%host% --port=%port% --fast
 ) ELSE (
