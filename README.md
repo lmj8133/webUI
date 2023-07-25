@@ -33,7 +33,7 @@ requirements:
 - python3.8
 - node.js
 
-### environment setup
+### python and vite environment setup
 
 ```bash
 ./setup
