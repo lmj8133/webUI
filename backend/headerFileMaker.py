@@ -11,6 +11,23 @@ import os
 
 
 def header_analyze(file_data: 'list[str]', json_path):
+    """Analyze header file and return a dict with the data
+
+    Args:
+        file_data (list[str]): List of lines of the header file
+        json_path ([type]): Path to the json file with the data
+
+    Returns:
+        Dict with the data
+        For example:
+        {
+            'title': { 'value': 'value', 'line': 0, 'id': 0 },
+            'title2': { 'value': True, 'line': 1, 'id': 1 },
+        }
+    
+    Raises:
+        None
+    """
     with open(json_path, 'r') as json_file:
         json_data = json.loads(json_file.read())
 
@@ -33,7 +50,8 @@ def header_analyze(file_data: 'list[str]', json_path):
             title = datas['title'][title_num]
             title_found = line.strip().find(title)
             if title_found != -1:
-                args = line.strip()[title_found + len(title):].strip().split(' ')
+                args = line.strip()[title_found + len(title):]
+                args = args.strip().split(' ')
                 if args[0] and title_found == 0:
                     if line.find(title + ' ') == -1:
                         continue
@@ -50,6 +68,19 @@ def header_analyze(file_data: 'list[str]', json_path):
 
 
 def header_change(save_data: 'dict', data: 'dict', file_path):
+    """Change the header file with the new data
+
+    Args:
+        save_data (dict): Dict with the data of the header file
+        data (dict): Dict with the new data
+        file_path (str): Path to the header file
+
+    Returns:
+        List with the new header file
+
+    Raises:
+        None
+    """
     new_file = []
     with open(file_path, 'r+') as f:
         new_file = f.read().splitlines()
@@ -61,7 +92,8 @@ def header_change(save_data: 'dict', data: 'dict', file_path):
 
         if new_value != save_data[title]['value']:
             if type(new_value) != bool:
-                new_file[line_num] = line_content.lstrip(' ').replace(save_data[title]['value'], data[title])
+                new_file[line_num] = line_content.lstrip(' ').replace(
+                    save_data[title]['value'], data[title])
             else:
                 if new_value:
                     new_file[line_num] = line_content.lstrip(' /')
