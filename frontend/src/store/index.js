@@ -36,6 +36,9 @@ export default createStore({
     updateDataIndex(state, payload) {
       state.dataIndex = payload.index
     },
+    updateIsShutDown(state, payload) {
+      state.isShutDown = payload.value
+    }
   },
   actions: {
     updateHeaderData(context, data) {
@@ -52,6 +55,9 @@ export default createStore({
     },
     updateDataIndex(context, index) {
       context.commit('updateDataIndex', { index: index })
+    },
+    updateIsShutDown(context, value = true) {
+      context.commit('updateIsShutDown', { value: value })
     }
   },
   modules: {},

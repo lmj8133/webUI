@@ -49,7 +49,7 @@ import {
   CImage,
   CButton,
 } from "@coreui/vue";
-import { CIcon } from "@coreui/icons-vue";
+// import { CIcon } from "@coreui/icons-vue";
 
 import { computed } from "vue";
 import { useStore } from "vuex";
@@ -77,16 +77,9 @@ export default {
   },
   methods: {
     shutdown() {
-      if (!confirm("Are you sure to exit?")) return;
-      axios.get("/shutdown").then((response) => {
-        if (response.data.status != "success") {
-          console.log("shutdown failed");
-        } else {
-          console.log("shutdown");
-          window.href = "about:blank";
-          window.close();
-        }
-      });
+      window.href = "about:blank";
+      window.close();
+      axios.get("/shutdown")
     },
   },
 };
