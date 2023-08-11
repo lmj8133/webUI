@@ -78,9 +78,15 @@ export default {
   methods: {
     shutdown() {
       if (!confirm("Are you sure to exit?")) return;
-      axios.get("/shutdown");
-      window.href = "about:blank";
-      window.close();
+      axios.get("/shutdown").then((response) => {
+        if (response.data.status != "success") {
+          console.log("shutdown failed");
+        } else {
+          console.log("shutdown");
+          window.href = "about:blank";
+          window.close();
+        }
+      });
     },
   },
 };

@@ -148,18 +148,12 @@ async def clear(request: Request) -> HTTPResponse:
         'status': 'success',
         'data': {'message': 'File deleted'}})
 
-# TODO(Sun 2023-08-10): shutdown server by sending a signal
-# @app.get('/shutdown')
-# async def shutdown(request: Request) -> HTTPResponse:
-#     async def cleanup(app, _):
-#         import asyncio
-#         for task in asyncio.all_tasks():
-#             if task.get_name().startswith("signal"):
-#                 await task
-#     cleanup(app, None)
-#     return response.json({
-#         'status': 'success',
-#         'data': {'message': 'Server shutting down'}})
+@app.get('/shutdown')
+async def shutdown(request: Request) -> HTTPResponse:
+    app.stop()
+    return response.json({
+        'status': 'success',
+        'data': {'message': 'Server shutting down'}})
 
 if __name__ == '__main__':
     if 'python.exe' in sys.executable:
